@@ -21,7 +21,7 @@ All following commands are running from project folder.
 
 Create compiled java class file in folder ```WebContent/WEB-INF/classes/``` by next command:
 ```
-javac -cp TOMCAT_FOLDER/lib/servlet-api.jar -d ./WebContent/WEB-INF/classes/ ./src/net/java/servlet/SimpleServlet.java
+javac -cp TOMCAT_FOLDER/lib/servlet-api.jar -d ./WebContent/WEB-INF/classes/ ./src/net/lessons/servlet/SimpleServlet.java
 ```
 
 ## Make war file

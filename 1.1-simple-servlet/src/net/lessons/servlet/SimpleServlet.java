@@ -1,4 +1,4 @@
-package net.java.servlet;
+package net.lessons.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -44,7 +44,7 @@ public class SimpleServlet extends HttpServlet {
         writer.flush();
 
     }
- 
+
     /**
      * this life-cycle method is invoked when the application or the server
      * is shutting down

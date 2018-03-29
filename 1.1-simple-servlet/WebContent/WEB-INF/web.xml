@@ -10,7 +10,7 @@
 
     <servlet>
         <servlet-name>SimpleServlet</servlet-name>
-        <servlet-class>net.java.servlet.SimpleServlet</servlet-class>
+        <servlet-class>net.lessons.servlet.SimpleServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
