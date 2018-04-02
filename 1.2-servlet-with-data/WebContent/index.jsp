@@ -1,0 +1,17 @@
+<html>
+<head>
+    <title>Servlet With Data</title>
+</head>
+<body>
+    <a href="./ServletWithData">Click to send GET request</a>
+    <br/><br/>
+    <form action="ServletWithData" method="post">
+        Your name: <input type="text" size="20" name="name"/>
+        &nbsp;&nbsp;
+        Age <input type="number" size="5" name="age"/>
+        &nbsp;&nbsp;
+        <input type="submit" value="Calculate" />
+    </form>
+
+</body>
+</html>
