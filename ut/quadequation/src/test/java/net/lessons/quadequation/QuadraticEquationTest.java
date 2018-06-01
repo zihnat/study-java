@@ -1,5 +1,6 @@
 package net.lessons.quadequation;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.fail;
 import java.util.Arrays;
 import org.junit.Test;
@@ -14,60 +15,31 @@ public class QuadraticEquationTest{
   }
 
   @Test
-  public void test_solve_a1_b1_c0(){
+  public void test_solve(){
     try{
+      double[] expected = {-1.0, 0.0};
       double[] res = qe.solve(1, 1, 0);
-      Arrays.sort(res);
-      assertEquals(-1, res[0], 0.01);
-      assertEquals(0, res[1], 0.01);
-    }catch(Exception e){
-      fail("Wgot exception");
-    }
-  }
+      assertArrayEquals(expected, res, 0.01);
 
-  @Test
-  public void test_solve_a1_bm1_c0(){
-    try{
-      double[] res = qe.solve(1, -1, 0);
-      Arrays.sort(res);
-      assertEquals(0, res[0], 0.01);
-      assertEquals(1, res[1], 0.01);
-    }catch(Exception e){
-      fail("Wgot exception");
-    }
-  }
+      expected[0] = 0.0;
+      expected[1] = 1.0;
+      res = qe.solve(1, -1, 0);
+      assertArrayEquals(expected, res, 0.01);
 
-  @Test
-  public void test_solve_a1_b0_cm1(){
-    try{
-      double[] res = qe.solve(1.0, 0, -1.0);
-      Arrays.sort(res);
-      assertEquals(-1.0, res[0], 0.01);
-      assertEquals(1.0, res[1], 0.01);
-    }catch(Exception e){
-      fail("Wgot exception");
-    }
-  }
+      expected[0] = -1.0;
+      expected[1] = 1.0;
+      res = qe.solve(1.0, 0, -1.0);
+      assertArrayEquals(expected, res, 0.01);
 
-  @Test
-  public void test_solve_a1_b0_cm4(){
-    try{
-      double[] res = qe.solve(1.0, 0, -4.0);
-      Arrays.sort(res);
-      assertEquals(-2.0, res[0], 0.01);
-      assertEquals(2.0, res[1], 0.01);
-    }catch(Exception e){
-      fail("Wgot exception");
-    }
-  }
+      expected[0] = -2.0;
+      expected[1] = 2.0;
+      res = qe.solve(1.0, 0, -4.0);
+      assertArrayEquals(expected, res, 0.01);
 
-  @Test
-  public void test_solve_a3_b6_cm24(){
-    try{
-      double[] res = qe.solve(3, 6 , -24);
-      Arrays.sort(res);
-      assertEquals(-4.0, res[0], 0.01);
-      assertEquals(2.0, res[1], 0.01);
+      expected[0] = -4.0;
+      expected[1] = 2.0;
+      res = qe.solve(3, 6 , -24);
+      assertArrayEquals(expected, res, 0.01);
     }catch(Exception e){
       fail("Wgot exception");
     }
