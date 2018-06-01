@@ -5,6 +5,8 @@ import static org.junit.Assert.fail;
 import java.util.Arrays;
 import org.junit.Test;
 import org.junit.BeforeClass;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class QuadraticEquationTest{
   private static IQuadraticEquation qe;
@@ -46,26 +48,22 @@ public class QuadraticEquationTest{
   }
 
   @Test
-  public void test_solve_exception_a0(){
+  public void test_solve_exception_not_quadratic(){
     try{
       double[] res = qe.solve(0.0, 6.0, -24.0);
       fail("Exception expected");
-    }catch(Exception e){}
+    }catch(Exception e){
+      assertThat(e.getMessage(), is("Equation is not quadratic."));
+    }
   }
 
   @Test
-  public void test_solve_exception_a1_b0_c1(){
-    try{
-      double[] res = qe.solve(1.0, 0.0, 1.0);
-      fail("Exception expected");
-    }catch(Exception e){}
-  }
-
-  @Test
-  public void test_solve_exception_a1_b1_c1(){
+  public void test_solve_exception_complex_result(){
     try{
       double[] res = qe.solve(1.0, 1.0, 1.0);
       fail("Exception expected");
-    }catch(Exception e){}
+    }catch(Exception e){
+      assertThat(e.getMessage(), is("Solution is complex number."));
+    }
   }
 }

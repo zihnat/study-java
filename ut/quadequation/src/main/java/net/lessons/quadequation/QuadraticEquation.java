@@ -9,11 +9,11 @@ public class QuadraticEquation implements IQuadraticEquation{
   public double[] solve(double a, double b, double c)
   throws Exception{
     if(a == 0){
-      throw new Exception("Equation is not quadratic");
+      throw new Exception("Equation is not quadratic.");
     }
     double d = Math.pow(b, 2) - 4 * a * c;
     if(d < 0){
-      throw new Exception("Soulution would not be a real number! Complex numbers are not supported in class QuadraticEquation.");
+      throw new Exception("Solution is complex number.");
     }
     double x1 = (-b - Math.sqrt(d)) / (2 * a);
     double x2 = (-b + Math.sqrt(d)) / (2 * a);
