@@ -1,9 +1,9 @@
-package net.lessons.junit.simpletest.tests;
+package net.lessons.simpletest;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import net.lessons.junit.simpletest.Calculator;
+//import net.lessons.simpletest.Calculator;
 
-public class CalculatorTests{
+public class CalculatorTest{
 
   @Test
   public void Sum_1plus1_res7(){

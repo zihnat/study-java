@@ -1,4 +1,4 @@
-package net.lessons.junit.simpletest;
+package net.lessons.simpletest;
 import java.util.*;
 
 public class Calculator{
