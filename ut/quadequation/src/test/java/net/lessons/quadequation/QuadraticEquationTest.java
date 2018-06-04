@@ -17,53 +17,47 @@ public class QuadraticEquationTest{
   }
 
   @Test
-  public void test_solve(){
-    try{
-      double[] expected = {-1.0, 0.0};
-      double[] res = qe.solve(1, 1, 0);
-      assertArrayEquals(expected, res, 0.01);
-
-      expected[0] = 0.0;
-      expected[1] = 1.0;
-      res = qe.solve(1, -1, 0);
-      assertArrayEquals(expected, res, 0.01);
-
-      expected[0] = -1.0;
-      expected[1] = 1.0;
-      res = qe.solve(1.0, 0, -1.0);
-      assertArrayEquals(expected, res, 0.01);
-
-      expected[0] = -2.0;
-      expected[1] = 2.0;
-      res = qe.solve(1.0, 0, -4.0);
-      assertArrayEquals(expected, res, 0.01);
-
-      expected[0] = -4.0;
-      expected[1] = 2.0;
-      res = qe.solve(3, 6 , -24);
-      assertArrayEquals(expected, res, 0.01);
-    }catch(Exception e){
-      fail("Wgot exception");
-    }
+  public void test_solve() throws Exception{
+    double[] expected = {-1.0, 0.0};
+    double[] res = qe.solve(1, 1, 0);
+    assertArrayEquals(expected, res, 0.01);
   }
 
   @Test
-  public void test_solve_exception_not_quadratic(){
-    try{
-      double[] res = qe.solve(0.0, 6.0, -24.0);
-      fail("Exception expected");
-    }catch(Exception e){
-      assertThat(e.getMessage(), is("Equation is not quadratic."));
-    }
+  public void test_solve() throws Exception{
+    double[] expected = {0.0, 1.0};
+    double[] res = qe.solve(1, -1, 0);
+    assertArrayEquals(expected, res, 0.01);
   }
 
   @Test
-  public void test_solve_exception_complex_result(){
-    try{
+  public void test_solve() throws Exception{
+    double[] expected = {-1.0, 1.0};
+    double[] res = qe.solve(1.0, 0, -1.0);
+    assertArrayEquals(expected, res, 0.01);
+  }
+
+  @Test
+  public void test_solve() throws Exception{
+    double[] expected = {-2.0, 2.0};
+    double[] res = qe.solve(1.0, 0, -4.0);
+    assertArrayEquals(expected, res, 0.01);
+  }
+
+  @Test
+  public void test_solve() throws Exception{
+    double[] expected = {-4.0, 2.0};
+    double[] res = qe.solve(3, 6 , -24);
+    assertArrayEquals(expected, res, 0.01);
+  }
+
+  @Test(expected = Exception.class)
+  public void test_solve_exception_not_quadratic() throws Exception{
+    double[] res = qe.solve(0.0, 6.0, -24.0);
+  }
+
+  @Test(expected = Exception.class)
+  public void test_solve_exception_complex_result() throws Exception{
       double[] res = qe.solve(1.0, 1.0, 1.0);
-      fail("Exception expected");
-    }catch(Exception e){
-      assertThat(e.getMessage(), is("Solution is complex number."));
-    }
   }
 }
