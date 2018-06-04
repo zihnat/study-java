@@ -11,11 +11,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class QuadraticEquationTest{
 
   @Test
-  public void test_init_QuadraticEquation() {
-    IQuadraticEquation qe = new QuadraticEquation();
-  }
-
-  @Test
   public void test_solve_attr_m1_1_0() throws Exception{
     IQuadraticEquation qe = new QuadraticEquation();
     double[] expected = {-1.0, 0.0};
