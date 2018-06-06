@@ -1,0 +1,95 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+
+<beans xmlns  = "http://www.springframework.org/schema/beans"
+   xmlns:xsi  = "http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:util = "http://www.springframework.org/schema/util"
+   xsi:schemaLocation = "http://www.springframework.org/schema/beans
+                         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+   <bean id = "lector01" class = "net.lessons.spring.Lector">
+     <constructor-arg type = "String" value = "Ivan"/>
+     <constructor-arg type = "String" value = "Ivanov"/>
+   </bean>
+
+   <bean id = "lector02" class = "net.lessons.spring.Lector">
+     <constructor-arg type = "String" value = "Petr"/>
+     <constructor-arg type = "String" value = "Petrov"/>
+   </bean>
+
+   <bean id = "lector03" class = "net.lessons.spring.Lector">
+     <constructor-arg type = "String" value = "Stepan"/>
+     <constructor-arg type = "String" value = "Stepanov"/>
+   </bean>
+
+   <bean id = "lector04" class = "net.lessons.spring.Lector">
+     <constructor-arg type = "String" value = "Semen"/>
+     <constructor-arg type = "String" value = "Semenov"/>
+   </bean>
+
+   <bean id = "lector05" class = "net.lessons.spring.Lector">
+     <constructor-arg type = "String" value = "Viktor"/>
+     <constructor-arg type = "String" value = "Voktorov"/>
+   </bean>
+
+   <bean id = "lector06" class = "net.lessons.spring.Lector">
+     <constructor-arg type = "String" value = "Igor"/>
+     <constructor-arg type = "String" value = "Igorev"/>
+   </bean>
+
+   <bean id = "lector07" class = "net.lessons.spring.Lector">
+     <constructor-arg type = "String" value = "John"/>
+     <constructor-arg type = "String" value = "Smith"/>
+   </bean>
+
+   <bean id = "cafedra1" class = "net.lessons.spring.Cafedra">
+     <constructor-arg type = "String" value = "Mathematics"/>
+     <property name = "lectors">
+       <set value-type = "net.lessons.spring.Lector">
+         <ref bean = "lector01"/>
+         <ref bean = "lector02"/>
+       </set>
+     </property>
+   </bean>
+
+   <bean id = "cafedra2" class = "net.lessons.spring.Cafedra">
+     <constructor-arg type = "String" value = "Phisics"/>
+     <property name = "lectors">
+       <set value-type = "net.lessons.spring.Lector">
+         <ref bean = "lector03"/>
+       </set>
+     </property>
+   </bean>
+
+   <bean id = "cafedra3" class = "net.lessons.spring.Cafedra">
+     <constructor-arg type = "String" value = "Programming"/>
+     <property name = "lectors">
+       <set value-type = "net.lessons.spring.Lector">
+         <ref bean = "lector04"/>
+         <ref bean = "lector05"/>
+         <ref bean = "lector06"/>
+       </set>
+     </property>
+   </bean>
+
+   <bean id = "cafedra4" class = "net.lessons.spring.Cafedra">
+     <constructor-arg type = "String" value = "English"/>
+     <property name = "lectors">
+       <set value-type = "net.lessons.spring.Lector">
+         <ref bean = "lector07"/>
+       </set>
+     </property>
+   </bean>
+
+   <bean id = "university" class = "net.lessons.spring.University">
+     <constructor-arg type = "String" value = "Programming Akademy"/>
+     <property name = "cafedras">
+       <set value-type = "net.lessons.spring.Cafedra">
+         <ref bean = "cafedra1"/>
+         <ref bean = "cafedra2"/>
+         <ref bean = "cafedra3"/>
+         <ref bean = "cafedra4"/>
+       </set>
+     </property>
+   </bean>
+
+</beans>
