@@ -2,11 +2,19 @@ package net.lessons.spring;
 
 import net.lessons.spring.Lector;
 import java.util.*;
+import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Scope;
 
+@Component("cafedraPrototype")
+@Scope("prototype")
 public class Cafedra{
 
   private String cafedraName;
   private HashSet<Lector> lectors;
+
+  public Cafedra(){
+    lectors = new HashSet<Lector>();
+  }
 
   public Cafedra(String name){
     cafedraName = name;

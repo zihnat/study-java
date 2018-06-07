@@ -1,8 +1,15 @@
 package net.lessons.spring;
 
+import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Scope;
+
+@Component("lectorPrototype")
+@Scope("prototype")
 public class Lector{
   private String firstName;
   private String lastName;
+
+  public Lector(){}
 
   public Lector(String fName, String lName){
     setFirstName(fName);

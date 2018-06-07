@@ -2,16 +2,20 @@ package net.lessons.spring;
 
 import net.lessons.spring.Cafedra;
 import java.util.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Scope;
 
 @Component("universityPrototype")
+@Scope("prototype")
 public class University{
 
   private String universityName;
   private HashSet<Cafedra> cafedras;
 
-  @Autowired
+  public University(){
+    cafedras = new HashSet<Cafedra>();
+  }
+
   public University(String name){
     universityName = name;
     cafedras = new HashSet<Cafedra>();
@@ -25,7 +29,6 @@ public class University{
     return universityName;
   }
 
-  @Autowired
   public void setCafedras(HashSet<Cafedra> newCafedras){
     cafedras = newCafedras;
   }
