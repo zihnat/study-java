@@ -5,10 +5,6 @@ import io.nats.streaming.NatsStreaming;
 import io.nats.streaming.Options;
 import io.nats.streaming.StreamingConnection;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeoutException;
 
