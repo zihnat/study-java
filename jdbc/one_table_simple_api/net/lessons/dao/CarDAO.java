@@ -51,13 +51,18 @@ public class CarDAO {
     }catch(Exception e){
       throw new Exception("Can't get list", e);
     }finally{
-      if(null != rs){
-        rs.close();
+      try{
+        if(null != rs){
+          rs.close();
+        }
+        if(null != st){
+          st.close();
+        }
+      }catch(Exception e){
+        throw new Exception("Can't close Statement or ResultSet", e);
+      }finally{
+        return result;
       }
-      if(null != st){
-        st.close();
-      }
-      return result;
     }
   }
 
@@ -78,13 +83,18 @@ public class CarDAO {
     }catch(Exception e){
       throw new Exception("Can't add record", e);
     }finally{
-      if(null != rs){
-        rs.close();
+      try{
+        if(null != rs){
+          rs.close();
+        }
+        if(null != st){
+          st.close();
+        }
+      }catch(Exception e){
+        throw new Exception("Can't close Statement or ResultSet", e);
+      }finally{
+        return result;
       }
-      if(null != st){
-        st.close();
-      }
-      return result;
     }
   }
 
