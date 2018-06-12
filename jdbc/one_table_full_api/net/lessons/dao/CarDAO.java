@@ -5,7 +5,6 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import net.lessons.dao.CarDTO;
 import net.lessons.dao.DAOException;
@@ -74,7 +73,7 @@ public class CarDAO {
   }
 
   public int addCar(String newMark, String newModel)
-  throws DAOException, SQLException{
+  throws DAOException{
     Statement st = null;
     Integer num = 0;
     ResultSet rs = null;
