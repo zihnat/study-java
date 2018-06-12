@@ -20,7 +20,7 @@ public class CarDAO {
       String connectionURL = "jdbc:mysql://localhost:3306/example";
       connection = DriverManager.getConnection(connectionURL, "user", "passwordForUser");
     }catch(Exception e){
-      throw new DAOException("Can't connect to db");
+      throw new DAOException("Can't connect to db", e);
     }
   }
 
@@ -29,7 +29,7 @@ public class CarDAO {
     try{
       connection.close();
     }catch(Exception e){
-      throw new DAOException("Exception occured while closing connection");
+      throw new DAOException("Exception occured while closing connection", e);
     }
   }
 
@@ -40,7 +40,6 @@ public class CarDAO {
     List<CarDTO> result = new ArrayList<CarDTO>();
     Statement st = null;
     ResultSet rs = null;
-    DAOException isException = null;
     try{
       st = connection.createStatement();
       String query = "select id, mark, model from cars";
@@ -50,8 +49,9 @@ public class CarDAO {
         CarDTO dto = new CarDTO(rs.getInt("id"), rs.getString("mark"), rs.getString("model"));
         result.add(dto);
       }
+      return result;
     }catch(Exception e){
-      isException = new DAOException("Can't get list");
+      throw new DAOException("Can't get list", e);
     }finally{
       try{
         if(null != rs){
@@ -60,13 +60,8 @@ public class CarDAO {
         if(null != st){
           st.close();
         }
-        if(null == isException){
-          return result;
-        }else{
-          throw isException;
-        }
       }catch(Exception e){
-        throw new DAOException("Can't close Statement or ResultSet");
+        throw new DAOException("Can't close Statement or ResultSet", e);
       }
     }
   }
@@ -77,7 +72,6 @@ public class CarDAO {
     Integer num = 0;
     ResultSet rs = null;
     Integer result = -1;
-    DAOException isException = null;
     try{
       st = connection.createStatement();
       String query = "insert into cars (mark, model) values (\"" + newMark + "\", \"" + newModel + "\")";
@@ -86,8 +80,9 @@ public class CarDAO {
       if (rs.next()){
         result=rs.getInt(1);
       }
+      return result;
     }catch(Exception e){
-      isException = new DAOException("Can't get list");
+      throw new DAOException("Can't add record", e);
     }finally{
       try{
         if(null != rs){
@@ -96,13 +91,8 @@ public class CarDAO {
         if(null != st){
           st.close();
         }
-        if(null == isException){
-          return result;
-        }else{
-          throw isException;
-        }
       }catch(Exception e){
-        throw new DAOException("Can't close Statement or ResultSet");
+        throw new DAOException("Can't close Statement or ResultSet", e);
       }
     }
   }
@@ -114,7 +104,6 @@ public class CarDAO {
     Statement st = null;
     ResultSet rs = null;
     CarDTO result = null;
-    DAOException isException = null;
     try{
       st = connection.createStatement();
       String query = "select id, mark, model from cars where id = " + id;
@@ -122,8 +111,9 @@ public class CarDAO {
       if(rs.next()){
         result = new CarDTO(rs.getInt("id"), rs.getString("mark"), rs.getString("model"));
       }
+      return result;
     }catch(Exception e){
-      isException = new DAOException("Can't get list");
+      throw new DAOException("Can't get record by ID", e);
     }finally{
       try{
         if(null != rs){
@@ -132,13 +122,8 @@ public class CarDAO {
         if(null != st){
           st.close();
         }
-        if(null == isException){
-          return result;
-        }else{
-          throw isException;
-        }
       }catch(Exception e){
-        throw new DAOException("Can't close Statement or ResultSet");
+        throw new DAOException("Can't close Statement or ResultSet", e);
       }
     }
   }
@@ -149,7 +134,6 @@ public class CarDAO {
     Integer num = 0;
     ResultSet rs = null;
     Boolean result = false;
-    DAOException isException = null;
     try{
       st = connection.createStatement();
       String query = "update cars set mark = \"" + newMark + "\", model = \"" + newModel + "\" where id = " + id;
@@ -158,8 +142,9 @@ public class CarDAO {
       if (rs.next() && rs.getInt(1) > 0){
         result = true;
       }
+      return result;
     }catch(Exception e){
-      isException = new DAOException("Can't get list");
+      throw new DAOException("Can't update record", e);
     }finally{
       try{
         if(null != rs){
@@ -168,13 +153,8 @@ public class CarDAO {
         if(null != st){
           st.close();
         }
-        if(null == isException){
-          return result;
-        }else{
-          throw isException;
-        }
       }catch(Exception e){
-        throw new DAOException("Can't close Statement or ResultSet");
+        throw new DAOException("Can't close Statement or ResultSet", e);
       }
     }
   }
@@ -185,7 +165,6 @@ public class CarDAO {
     Integer num = 0;
     ResultSet rs = null;
     Boolean result = false;
-    DAOException isException = null;
     try{
       st = connection.createStatement();
       String query = "update cars set mark = \"" + newMark + "\" where id = " + id;
@@ -194,8 +173,9 @@ public class CarDAO {
       if (rs.next() && rs.getInt(1) > 0){
         result = true;
       }
+      return result;
     }catch(Exception e){
-      isException = new DAOException("Can't get list");
+      throw new DAOException("Can't update record", e);
     }finally{
       try{
         if(null != rs){
@@ -204,13 +184,8 @@ public class CarDAO {
         if(null != st){
           st.close();
         }
-        if(null == isException){
-          return result;
-        }else{
-          throw isException;
-        }
       }catch(Exception e){
-        throw new DAOException("Can't close Statement or ResultSet");
+        throw new DAOException("Can't close Statement or ResultSet", e);
       }
     }
   }
@@ -221,7 +196,6 @@ public class CarDAO {
     Integer num = 0;
     ResultSet rs = null;
     Boolean result = false;
-    DAOException isException = null;
     try{
       st = connection.createStatement();
       String query = "update cars set model = \"" + newModel + "\" where id = " + id;
@@ -230,8 +204,9 @@ public class CarDAO {
       if (rs.next() && rs.getInt(1) > 0){
         result = true;
       }
+      return result;
     }catch(Exception e){
-      isException = new DAOException("Can't get list");
+      throw new DAOException("Can't get update record", e);
     }finally{
       try{
         if(null != rs){
@@ -240,13 +215,8 @@ public class CarDAO {
         if(null != st){
           st.close();
         }
-        if(null == isException){
-          return result;
-        }else{
-          throw isException;
-        }
       }catch(Exception e){
-        throw new DAOException("Can't close Statement or ResultSet");
+        throw new DAOException("Can't close Statement or ResultSet", e);
       }
     }
   }
@@ -257,7 +227,6 @@ public class CarDAO {
     Integer num = 0;
     ResultSet rs = null;
     Boolean result = false;
-    DAOException isException = null;
     try{
       st = connection.createStatement();
       String query = "delete from cars where id = " + id;
@@ -265,8 +234,9 @@ public class CarDAO {
       if(num > 0){
         result = true;
       }
+      return result;
     }catch(Exception e){
-      isException = new DAOException("Can't get list");
+      throw new DAOException("Can't delete record", e);
     }finally{
       try{
         if(null != rs){
@@ -275,13 +245,8 @@ public class CarDAO {
         if(null != st){
           st.close();
         }
-        if(null == isException){
-          return result;
-        }else{
-          throw isException;
-        }
       }catch(Exception e){
-        throw new DAOException("Can't close Statement or ResultSet");
+        throw new DAOException("Can't close Statement or ResultSet", e);
       }
     }
   }
