@@ -34,7 +34,7 @@ public class CarDAO {
   }
 
   //base
-
+//*
   public List<CarDTO> getAllCars()
   throws DAOException{
     List<CarDTO> result = new ArrayList<CarDTO>();
@@ -44,7 +44,6 @@ public class CarDAO {
       st = connection.createStatement();
       String query = "select id, mark, model from cars";
       rs = st.executeQuery(query);
-      result = new ArrayList<CarDTO>();
       while(rs.next()){
         CarDTO dto = new CarDTO(rs.getInt("id"), rs.getString("mark"), rs.getString("model"));
         result.add(dto);
@@ -53,15 +52,23 @@ public class CarDAO {
     }catch(Exception e){
       throw new DAOException("Can't get list", e);
     }finally{
+      DAOException exc = null;
       try{
         if(null != rs){
           rs.close();
         }
+      }catch(Exception e){
+        exc = new DAOException("Can't close ResultSet", e);
+      }
+      try{
         if(null != st){
           st.close();
         }
       }catch(Exception e){
-        throw new DAOException("Can't close Statement or ResultSet", e);
+        exc = new DAOException("Can't close Statement", e);
+      }
+      if(null != exc){
+        throw exc;
       }
     }
   }
@@ -84,15 +91,23 @@ public class CarDAO {
     }catch(Exception e){
       throw new DAOException("Can't add record", e);
     }finally{
+      DAOException exc = null;
       try{
         if(null != rs){
           rs.close();
         }
+      }catch(Exception e){
+        exc = new DAOException("Can't close ResultSet", e);
+      }
+      try{
         if(null != st){
           st.close();
         }
       }catch(Exception e){
-        throw new DAOException("Can't close Statement or ResultSet", e);
+        exc = new DAOException("Can't close Statement", e);
+      }
+      if(null != exc){
+        throw exc;
       }
     }
   }
@@ -115,15 +130,23 @@ public class CarDAO {
     }catch(Exception e){
       throw new DAOException("Can't get record by ID", e);
     }finally{
+      DAOException exc = null;
       try{
         if(null != rs){
           rs.close();
         }
+      }catch(Exception e){
+        exc = new DAOException("Can't close ResultSet", e);
+      }
+      try{
         if(null != st){
           st.close();
         }
       }catch(Exception e){
-        throw new DAOException("Can't close Statement or ResultSet", e);
+        exc = new DAOException("Can't close Statement", e);
+      }
+      if(null != exc){
+        throw exc;
       }
     }
   }
@@ -146,15 +169,23 @@ public class CarDAO {
     }catch(Exception e){
       throw new DAOException("Can't update record", e);
     }finally{
+      DAOException exc = null;
       try{
         if(null != rs){
           rs.close();
         }
+      }catch(Exception e){
+        exc = new DAOException("Can't close ResultSet", e);
+      }
+      try{
         if(null != st){
           st.close();
         }
       }catch(Exception e){
-        throw new DAOException("Can't close Statement or ResultSet", e);
+        exc = new DAOException("Can't close Statement", e);
+      }
+      if(null != exc){
+        throw exc;
       }
     }
   }
@@ -177,15 +208,23 @@ public class CarDAO {
     }catch(Exception e){
       throw new DAOException("Can't update record", e);
     }finally{
+      DAOException exc = null;
       try{
         if(null != rs){
           rs.close();
         }
+      }catch(Exception e){
+        exc = new DAOException("Can't close ResultSet", e);
+      }
+      try{
         if(null != st){
           st.close();
         }
       }catch(Exception e){
-        throw new DAOException("Can't close Statement or ResultSet", e);
+        exc = new DAOException("Can't close Statement", e);
+      }
+      if(null != exc){
+        throw exc;
       }
     }
   }
@@ -208,15 +247,23 @@ public class CarDAO {
     }catch(Exception e){
       throw new DAOException("Can't get update record", e);
     }finally{
+      DAOException exc = null;
       try{
         if(null != rs){
           rs.close();
         }
+      }catch(Exception e){
+        exc = new DAOException("Can't close ResultSet", e);
+      }
+      try{
         if(null != st){
           st.close();
         }
       }catch(Exception e){
-        throw new DAOException("Can't close Statement or ResultSet", e);
+        exc = new DAOException("Can't close Statement", e);
+      }
+      if(null != exc){
+        throw exc;
       }
     }
   }
@@ -238,15 +285,23 @@ public class CarDAO {
     }catch(Exception e){
       throw new DAOException("Can't delete record", e);
     }finally{
+      DAOException exc = null;
       try{
         if(null != rs){
           rs.close();
         }
+      }catch(Exception e){
+        exc = new DAOException("Can't close ResultSet", e);
+      }
+      try{
         if(null != st){
           st.close();
         }
       }catch(Exception e){
-        throw new DAOException("Can't close Statement or ResultSet", e);
+        exc = new DAOException("Can't close Statement", e);
+      }
+      if(null != exc){
+        throw exc;
       }
     }
   }
