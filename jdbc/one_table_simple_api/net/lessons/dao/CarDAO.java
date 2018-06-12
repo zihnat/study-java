@@ -8,34 +8,35 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import net.lessons.dao.CarDTO;
+import net.lessons.dao.DAOException;
 
 public class CarDAO {
   private Connection connection;
 
   public CarDAO()
-  throws Exception{
+  throws DAOException{
     try{
       Class.forName("com.mysql.jdbc.Driver");
       String connectionURL = "jdbc:mysql://localhost:3306/example";
       connection = DriverManager.getConnection(connectionURL, "user", "passwordForUser");
     }catch(Exception e){
-      throw new Exception("Can't connect to db", e);
+      throw new DAOException("Can't connect to db", e);
     }
   }
 
   public void close()
-  throws Exception{
+  throws DAOException{
     try{
       connection.close();
     }catch(Exception e){
-      throw new Exception("Exception occured while closing connection", e);
+      throw new DAOException("Exception occured while closing connection", e);
     }
   }
 
   //base
 
   public List<CarDTO> getAllCars()
-  throws Exception{
+  throws DAOException{
     List<CarDTO> result = null;
     Statement st = null;
     ResultSet rs = null;
@@ -49,7 +50,7 @@ public class CarDAO {
         result.add(dto);
       }
     }catch(Exception e){
-      throw new Exception("Can't get list", e);
+      throw new DAOException("Can't get list", e);
     }finally{
       try{
         if(null != rs){
@@ -59,7 +60,7 @@ public class CarDAO {
           st.close();
         }
       }catch(Exception e){
-        throw new Exception("Can't close Statement or ResultSet", e);
+        throw new DAOException("Can't close Statement or ResultSet", e);
       }finally{
         return result;
       }
@@ -67,7 +68,7 @@ public class CarDAO {
   }
 
   public int addCar(String newMark, String newModel)
-  throws Exception{
+  throws DAOException{
     Statement st = null;
     Integer num = 0;
     ResultSet rs = null;
@@ -81,7 +82,7 @@ public class CarDAO {
         result=rs.getInt(1);
       }
     }catch(Exception e){
-      throw new Exception("Can't add record", e);
+      throw new DAOException("Can't add record", e);
     }finally{
       try{
         if(null != rs){
@@ -91,7 +92,7 @@ public class CarDAO {
           st.close();
         }
       }catch(Exception e){
-        throw new Exception("Can't close Statement or ResultSet", e);
+        throw new DAOException("Can't close Statement or ResultSet", e);
       }finally{
         return result;
       }
