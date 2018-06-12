@@ -40,7 +40,6 @@ public class CarDAO {
     List<CarDTO> result = new ArrayList<CarDTO>();
     Statement st = null;
     ResultSet rs = null;
-    DAOException isException = null;
     try{
       st = connection.createStatement();
       String query = "select id, mark, model from cars";
@@ -50,8 +49,9 @@ public class CarDAO {
         CarDTO dto = new CarDTO(rs.getInt("id"), rs.getString("mark"), rs.getString("model"));
         result.add(dto);
       }
+      return result;
     }catch(Exception e){
-      isException = new DAOException("Can't get list");
+      throw new DAOException("Can't get list");
     }finally{
       try{
         if(null != rs){
@@ -59,11 +59,6 @@ public class CarDAO {
         }
         if(null != st){
           st.close();
-        }
-        if(null == isException){
-          return result;
-        }else{
-          throw isException;
         }
       }catch(Exception e){
         throw new DAOException("Can't close Statement or ResultSet");
@@ -77,7 +72,6 @@ public class CarDAO {
     Integer num = 0;
     ResultSet rs = null;
     Integer result = -1;
-    DAOException isException = null;
     try{
       st = connection.createStatement();
       String query = "insert into cars (mark, model) values (\"" + newMark + "\", \"" + newModel + "\")";
@@ -86,8 +80,9 @@ public class CarDAO {
       if (rs.next()){
         result=rs.getInt(1);
       }
+      return result;
     }catch(Exception e){
-      isException = new DAOException("Can't add record");
+      throw new DAOException("Can't add record");
     }finally{
       try{
         if(null != rs){
@@ -95,11 +90,6 @@ public class CarDAO {
         }
         if(null != st){
           st.close();
-        }
-        if(null == isException){
-          return result;
-        }else{
-          throw isException;
         }
       }catch(Exception e){
         throw new DAOException("Can't close Statement or ResultSet");
