@@ -20,7 +20,7 @@ public class CarDAO {
       String connectionURL = "jdbc:mysql://localhost:3306/example";
       connection = DriverManager.getConnection(connectionURL, "user", "passwordForUser");
     }catch(Exception e){
-      throw new DAOException("Can't connect to db", e);
+      throw new DAOException("Can't connect to db");
     }
   }
 
@@ -29,17 +29,18 @@ public class CarDAO {
     try{
       connection.close();
     }catch(Exception e){
-      throw new DAOException("Exception occured while closing connection", e);
+      throw new DAOException("Exception occured while closing connection");
     }
   }
 
   //base
 
   public List<CarDTO> getAllCars()
-  throws DAOException{
-    List<CarDTO> result = null;
+  throws DAOException, SQLException{
+    List<CarDTO> result = new ArrayList<CarDTO>();
     Statement st = null;
     ResultSet rs = null;
+    Boolean isException = false;
     try{
       st = connection.createStatement();
       String query = "select id, mark, model from cars";
@@ -50,7 +51,7 @@ public class CarDAO {
         result.add(dto);
       }
     }catch(Exception e){
-      throw new DAOException("Can't get list", e);
+      throw new DAOException("Can't get list");
     }finally{
       try{
         if(null != rs){
@@ -59,20 +60,22 @@ public class CarDAO {
         if(null != st){
           st.close();
         }
+        if(!isException){
+          return result;
+        }
       }catch(Exception e){
-        throw new DAOException("Can't close Statement or ResultSet", e);
-      }finally{
-        return result;
+        throw new DAOException("Can't close Statement or ResultSet");
       }
     }
   }
 
   public int addCar(String newMark, String newModel)
-  throws DAOException{
+  throws DAOException, SQLException{
     Statement st = null;
     Integer num = 0;
     ResultSet rs = null;
     Integer result = -1;
+    Boolean isException = false;
     try{
       st = connection.createStatement();
       String query = "insert into cars (mark, model) values (\"" + newMark + "\", \"" + newModel + "\")";
@@ -82,7 +85,8 @@ public class CarDAO {
         result=rs.getInt(1);
       }
     }catch(Exception e){
-      throw new DAOException("Can't add record", e);
+      isException = true;
+      throw new DAOException("Can't add record");
     }finally{
       try{
         if(null != rs){
@@ -91,10 +95,11 @@ public class CarDAO {
         if(null != st){
           st.close();
         }
+        if(!isException){
+          return result;
+        }
       }catch(Exception e){
-        throw new DAOException("Can't close Statement or ResultSet", e);
-      }finally{
-        return result;
+        throw new DAOException("Can't close Statement or ResultSet");
       }
     }
   }

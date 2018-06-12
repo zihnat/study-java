@@ -1,18 +1,18 @@
 package net.lessons.dao;
 
 class DAOException extends Exception{
-  private Exception stack;
 
-  public DAOException(String message/*, String methodName*/){
-    super(message);
+  public DAOException() {}
+
+  public DAOException(String detailMessage/*, String methodName*/){
+    super(detailMessage);
   }
 
-  public DAOException(String message, Exception exc){
-    super(message);
-    stack = exc;
+  public DAOException(String detailMessage, Throwable throwable) {
+      super(detailMessage, throwable);
   }
 
-  public Exception getStack(){
-    return stack;
+  public DAOException(Throwable throwable) {
+      super(throwable);
   }
 }
