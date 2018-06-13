@@ -1,5 +1,6 @@
 package net.lessons.dao;
 
+import java.io.*;
 import java.util.*;
 import java.sql.Connection;
 import java.sql.Date;
@@ -14,12 +15,25 @@ public class CarDAO {
 
   public CarDAO()
   throws DAOException{
+    FileInputStream is = null;
+    Properties property = new Properties();
     try{
-      Class.forName("com.mysql.jdbc.Driver");
-      String connectionURL = "jdbc:mysql://localhost:3306/example";
-      connection = DriverManager.getConnection(connectionURL, "user", "passwordForUser");
+      is = new FileInputStream("src/main/resources/config.properties");
+      property.load(is);
+      String login = property.getProperty("db.login");
+      String pass = property.getProperty("db.password");
+      String connectionURL = "jdbc:mysql://" + property.getProperty("db.host");
+      connection = DriverManager.getConnection(connectionURL, login, pass);
     }catch(Exception e){
       throw new DAOException("Can't connect to db", e);
+    }finally{
+      try{
+        if(null != is){
+          is.close();
+        }
+      }catch(Exception e){
+        throw new DAOException("Can't connect DB, can't close FileInputStream", e);
+      }
     }
   }
 
