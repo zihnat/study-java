@@ -3,7 +3,6 @@ package net.lessons.dao;
 import java.io.*;
 import java.util.*;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -22,7 +21,7 @@ public class CarDAO {
       property.load(is);
       String login = property.getProperty("db.login");
       String pass = property.getProperty("db.password");
-      String connectionURL = "jdbc:mysql://" + property.getProperty("db.host");
+      String connectionURL = property.getProperty("db.host");
       connection = DriverManager.getConnection(connectionURL, login, pass);
     }catch(Exception e){
       throw new DAOException("Can't connect to db", e);

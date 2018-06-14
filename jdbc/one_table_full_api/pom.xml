@@ -7,8 +7,13 @@
     <version>3.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>jdbc_one_table_full_api</name>
-
+    <!--dependencies>
+        <dependency>
+            <groupId>org.clojure</groupId>
+            <artifactId>java.jdbc</artifactId>
+            <version>0.7.6</version>
+        </dependency>
+    </dependencies-->
     <dependencies>
         <dependency>
             <groupId>mysql</groupId>
@@ -16,5 +21,47 @@
             <version>5.1.38</version>
         </dependency>
     </dependencies>
+    <!--plugin>
+      <groupId>org.codehaus.mojo</groupId>
+      <artifactId>properties-maven-plugin</artifactId>
+      <version>1.0.0</version>
+      <executions>
+        <execution>
+          <phase>initialize</phase>
+          <goals>
+            <goal>read-project-properties</goal>
+          </goals>
+          <configuration>
+            <files>
+              <file>src/main/resources/abc.properties</file>
+            </files>
+            <driver>${jdbc.driver}</driver>
+            <url>${jdbc.url}</url>
+            <user>${jdbc.user}</user>
+          </configuration>
+        </execution>
+      </executions>
+    </plugin-->
 
+    <!--profiles>
+      <profile>
+        <id>development</id>
+        <activation>
+            <activeByDefault>true</activeByDefault>
+        </activation>
+        <build>
+          <resources>
+        		<resource>
+        			<directory>src/main/resources/</directory>
+        			<filtering>true</filtering>
+        		</resource>
+        	</resources>
+            <filters>
+                <filter>src/resources/config.properties</filter>
+            </filters>
+        </build>
+      </profile>
+    </profiles-->
+
+    <!--configFile>src/main/resources/config.properties</configFile-->
 </project>
