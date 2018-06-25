@@ -22,8 +22,10 @@ public class CarDAO {
       String login = property.getProperty("db.login");
       String pass = property.getProperty("db.password");
       String connectionURL = property.getProperty("db.host");
+      Class.forName(property.getProperty("db.driver"));
       connection = DriverManager.getConnection(connectionURL, login, pass);
     }catch(Exception e){
+      System.out.println(e);
       throw new DAOException("Can't connect to db", e);
     }finally{
       try{

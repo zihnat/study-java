@@ -16,7 +16,7 @@ public class CarDTO {
     setModel(newModel);
   }
 
-  public void setId(int newId){
+  private void setId(int newId){
     id = newId;
   }
 
