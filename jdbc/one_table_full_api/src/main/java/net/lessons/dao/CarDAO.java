@@ -87,7 +87,7 @@ public class CarDAO {
     }
   }
 
-  public int addCar(String newMark, String newModel)
+  public int addCar(CarDTO car)
   throws DAOException{
     Statement st = null;
     Integer num = 0;
@@ -95,7 +95,7 @@ public class CarDAO {
     Integer result = -1;
     try{
       st = connection.createStatement();
-      String query = "insert into cars (mark, model) values (\"" + newMark + "\", \"" + newModel + "\")";
+      String query = "insert into cars (mark, model) values (\"" + car.getMark() + "\", \"" + car.getModel() + "\")";
       num = st.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
       rs = st.getGeneratedKeys();
       if (rs.next()){
@@ -165,7 +165,7 @@ public class CarDAO {
     }
   }
 
-  public boolean updateCar(int id, String newMark, String newModel)
+  public boolean updateCar(CarDTO car/*int id, String newMark, String newModel*/)
   throws DAOException{
     Statement st = null;
     Integer num = 0;
@@ -173,7 +173,7 @@ public class CarDAO {
     Boolean result = false;
     try{
       st = connection.createStatement();
-      String query = "update cars set mark = \"" + newMark + "\", model = \"" + newModel + "\" where id = " + id;
+      String query = "update cars set mark = \"" + car.getMark() + "\", model = \"" + car.getModel() + "\" where id = " + car.getId();
       num = st.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
       rs = st.getGeneratedKeys();
       if (rs.next() && rs.getInt(1) > 0){
@@ -204,98 +204,15 @@ public class CarDAO {
     }
   }
 
-  public boolean updateCarMark(int id, String newMark)
+  public void deleteCar(int id)
   throws DAOException{
     Statement st = null;
     Integer num = 0;
     ResultSet rs = null;
-    Boolean result = false;
-    try{
-      st = connection.createStatement();
-      String query = "update cars set mark = \"" + newMark + "\" where id = " + id;
-      num = st.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
-      rs = st.getGeneratedKeys();
-      if (rs.next() && rs.getInt(1) > 0){
-        result = true;
-      }
-      return result;
-    }catch(Exception e){
-      throw new DAOException("Can't update record", e);
-    }finally{
-      DAOException exc = null;
-      try{
-        if(null != rs){
-          rs.close();
-        }
-      }catch(Exception e){
-        exc = new DAOException("Can't close ResultSet", e);
-      }
-      try{
-        if(null != st){
-          st.close();
-        }
-      }catch(Exception e){
-        exc = new DAOException("Can't close Statement", e);
-      }
-      if(null != exc){
-        throw exc;
-      }
-    }
-  }
-
-  public boolean updateCarModel(int id, String newModel)
-  throws DAOException{
-    Statement st = null;
-    Integer num = 0;
-    ResultSet rs = null;
-    Boolean result = false;
-    try{
-      st = connection.createStatement();
-      String query = "update cars set model = \"" + newModel + "\" where id = " + id;
-      num = st.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
-      rs = st.getGeneratedKeys();
-      if (rs.next() && rs.getInt(1) > 0){
-        result = true;
-      }
-      return result;
-    }catch(Exception e){
-      throw new DAOException("Can't get update record", e);
-    }finally{
-      DAOException exc = null;
-      try{
-        if(null != rs){
-          rs.close();
-        }
-      }catch(Exception e){
-        exc = new DAOException("Can't close ResultSet", e);
-      }
-      try{
-        if(null != st){
-          st.close();
-        }
-      }catch(Exception e){
-        exc = new DAOException("Can't close Statement", e);
-      }
-      if(null != exc){
-        throw exc;
-      }
-    }
-  }
-
-  public boolean deleteCar(int id)
-  throws DAOException{
-    Statement st = null;
-    Integer num = 0;
-    ResultSet rs = null;
-    Boolean result = false;
     try{
       st = connection.createStatement();
       String query = "delete from cars where id = " + id;
       num = st.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
-      if(num > 0){
-        result = true;
-      }
-      return result;
     }catch(Exception e){
       throw new DAOException("Can't delete record", e);
     }finally{

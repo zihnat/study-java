@@ -11,7 +11,7 @@ public class Main {
       dao = new CarDAO();
       List <CarDTO> list = dao.getAllCars();
       showList(list);
-      dao.updateCar(1,"WV", "Bug");
+      dao.updateCar(new CarDTO(1,"WV", "Passat"));
       list = dao.getAllCars();
       showList(list);
     }catch(Exception e){
