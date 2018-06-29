@@ -17,8 +17,7 @@ public class CarDAO {
     FileInputStream is = null;
     Properties property = new Properties();
     try{
-      is = new FileInputStream("src/main/resources/config.properties");
-      property.load(is);
+      property.load(this.getClass().getResourceAsStream("/db.properties"));
       String login = property.getProperty("db.login");
       String pass = property.getProperty("db.password");
       String connectionURL = property.getProperty("db.host");
@@ -165,7 +164,7 @@ public class CarDAO {
     }
   }
 
-  public boolean updateCar(CarDTO car/*int id, String newMark, String newModel*/)
+  public boolean updateCar(CarDTO car)
   throws DAOException{
     Statement st = null;
     Integer num = 0;

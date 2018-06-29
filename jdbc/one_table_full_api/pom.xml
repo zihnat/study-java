@@ -16,4 +16,40 @@
             <version>5.1.46</version>
         </dependency>
     </dependencies>
+
+    <profiles>
+      <profile>
+         <id>dev</id>
+         <activation>
+             <activeByDefault>true</activeByDefault>
+         </activation>
+         <properties>
+             <jdbc.driver>com.mysql.jdbc.Driver</jdbc.driver>
+             <jdbc.host>jdbc:mysql://localhost:3306/example</jdbc.host>
+             <jdbc.login>user</jdbc.login>
+             <jdbc.password>passwordForUser</jdbc.password>
+         </properties>
+     </profile>
+   </profiles>
+
+   <build>
+    <resources>
+        <resource>
+             <directory>src/main/resources</directory>
+             <filtering>true</filtering>
+        </resource>
+    </resources>
+  </build>
+   <!--build>
+     <filters>
+          <filter>profiles/${build.profile.id}/config.properties</filter>
+      </filters>
+      <resources>
+            <resource>
+                <filtering>true</filtering>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+   </build-->
+
 </project>
