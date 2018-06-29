@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>net.lessons</groupId>
+    <artifactId>multy_tables_full_api</artifactId>
+    <version>3.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>jdbc_multy_tables_full_api</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.46</version>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+      <profile>
+         <id>dev</id>
+         <activation>
+             <activeByDefault>true</activeByDefault>
+         </activation>
+         <properties>
+             <jdbc.driver>com.mysql.jdbc.Driver</jdbc.driver>
+             <jdbc.host>jdbc:mysql://localhost:3306/example</jdbc.host>
+             <jdbc.login>user</jdbc.login>
+             <jdbc.password>passwordForUser</jdbc.password>
+         </properties>
+     </profile>
+   </profiles>
+
+   <build>
+    <resources>
+        <resource>
+             <directory>src/main/resources</directory>
+             <filtering>true</filtering>
+        </resource>
+    </resources>
+   </build>
+
+</project>
