@@ -40,16 +40,5 @@
         </resource>
     </resources>
   </build>
-   <!--build>
-     <filters>
-          <filter>profiles/${build.profile.id}/config.properties</filter>
-      </filters>
-      <resources>
-            <resource>
-                <filtering>true</filtering>
-                <directory>src/main/resources</directory>
-            </resource>
-        </resources>
-   </build-->
 
 </project>
