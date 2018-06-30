@@ -19,7 +19,10 @@ public class CompanyDAO extends BaseDAO<CompanyDTO>{
   protected CompanyDTO createDTO(ResultSet rs)
   throws DAOException{
     try{
-      return new CompanyDTO(rs.getInt("id"), rs.getString("name"));
+      return new CompanyDTO(
+              rs.getInt("id"), 
+              rs.getString("name")
+      );
     }catch(Exception e){
       throw new DAOException("Can't create DTO from result set", e);
     }

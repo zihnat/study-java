@@ -10,6 +10,7 @@ public class DAOFactory{
     creators = new HashMap<Class, BaseDAO>();
     creators.put(CarDTO.class, new CarDAO());
     creators.put(CompanyDTO.class, new CompanyDAO());
+    creators.put(ServiceDTO.class, new ServiceDAO());
   }
 
   public InterfaceDAO getDAO(Class dto) throws DAOException{

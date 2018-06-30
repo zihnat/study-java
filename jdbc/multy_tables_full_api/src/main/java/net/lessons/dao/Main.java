@@ -8,6 +8,7 @@ public class Main {
   public static void main(String[] args) {
     InterfaceDAO daoCar = null;
     InterfaceDAO daoComp = null;
+    InterfaceDAO daoServ = null;
     try{
       DAOFactory factory = new DAOFactory();
       //daoCar = new CarDAO();
@@ -18,7 +19,10 @@ public class Main {
       daoComp = factory.getDAO(CompanyDTO.class);
       List <CompanyDTO> listComps = daoComp.getAll();
       showList(listComps);
-    System.out.println(daoCar.getById(1));
+      System.out.println(" - Auto services at work - ");
+      daoServ = factory.getDAO(ServiceDTO.class);
+      List <ServiceDTO> listServs = daoServ.getAll();
+      showList(listServs);
     }catch(Exception e){
       System.out.println("Exception " + e);
     }finally{
