@@ -9,9 +9,12 @@ import java.sql.Statement;
 
 public abstract class BaseDAO<T> implements InterfaceDAO<T> {
   protected Connection connection;
+  
+  private Object lock;
 
   public BaseDAO()
   throws DAOException {
+    lock = new Object();
     FileInputStream is = null;
     Properties property = new Properties();
     try{
@@ -55,7 +58,7 @@ public abstract class BaseDAO<T> implements InterfaceDAO<T> {
   protected abstract T createDTO(ResultSet rs) throws DAOException;
 
   public List<T> getAll()
-  throws DAOException{
+  throws DAOException{  
     List<T> result = new ArrayList<T>();
     Statement st = null;
     ResultSet rs = null;
@@ -131,112 +134,118 @@ public abstract class BaseDAO<T> implements InterfaceDAO<T> {
 
   public int add(T obj)
   throws DAOException{
-    Statement st = null;
-    Integer num = 0;
-    ResultSet rs = null;
-    Integer result = -1;
-    try{
-      st = connection.createStatement();
-      String query = getAddQuery(obj);
-      num = st.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
-      rs = st.getGeneratedKeys();
-      if (rs.next()){
-        result=rs.getInt(1);
-      }
-      return result;
-    }catch(Exception e){
-      throw new DAOException("Can't add record", e);
-    }finally{
-      DAOException exc = null;
-      try{
-        if(null != rs){
-          rs.close();
+      synchronized(lock){
+        Statement st = null;
+        Integer num = 0;
+        ResultSet rs = null;
+        Integer result = -1;
+        try{
+          st = connection.createStatement();
+          String query = getAddQuery(obj);
+          num = st.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
+          rs = st.getGeneratedKeys();
+          if (rs.next()){
+            result=rs.getInt(1);
+          }
+          return result;
+        }catch(Exception e){
+          throw new DAOException("Can't add record", e);
+        }finally{
+          DAOException exc = null;
+          try{
+            if(null != rs){
+              rs.close();
+            }
+          }catch(Exception e){
+            exc = new DAOException("Can't close ResultSet", e);
+          }
+          try{
+            if(null != st){
+              st.close();
+            }
+          }catch(Exception e){
+            exc = new DAOException("Can't close Statement", e);
+          }
+          if(null != exc){
+            throw exc;
+          }
         }
-      }catch(Exception e){
-        exc = new DAOException("Can't close ResultSet", e);
       }
-      try{
-        if(null != st){
-          st.close();
-        }
-      }catch(Exception e){
-        exc = new DAOException("Can't close Statement", e);
-      }
-      if(null != exc){
-        throw exc;
-      }
-    }
   }
 
   public boolean update(T obj)
   throws DAOException{
-    Statement st = null;
-    Integer num = 0;
-    ResultSet rs = null;
-    Boolean result = false;
-    try{
-      st = connection.createStatement();
-      String query = getUpdateQuery(obj);
-      num = st.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
-      rs = st.getGeneratedKeys();
-      if (rs.next() && rs.getInt(1) > 0){
-        result = true;
-      }
-      return result;
-    }catch(Exception e){
-      throw new DAOException("Can't update record", e);
-    }finally{
-      DAOException exc = null;
-      try{
-        if(null != rs){
-          rs.close();
+    synchronized(lock){
+        Statement st = null;
+        Integer num = 0;
+        ResultSet rs = null;
+        Boolean result = false;
+        try{
+          st = connection.createStatement();
+          String query = getUpdateQuery(obj);
+          num = st.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
+          rs = st.getGeneratedKeys();
+          if (rs.next() && rs.getInt(1) > 0){
+            result = true;
+          }
+          return result;
+        }catch(Exception e){
+          throw new DAOException("Can't update record", e);
+        }finally{
+          DAOException exc = null;
+          try{
+            if(null != rs){
+              rs.close();
+            }
+          }catch(Exception e){
+            exc = new DAOException("Can't close ResultSet", e);
+          }
+          try{
+            if(null != st){
+              st.close();
+            }
+          }catch(Exception e){
+            exc = new DAOException("Can't close Statement", e);
+          }
+          if(null != exc){
+            throw exc;
+          }
         }
-      }catch(Exception e){
-        exc = new DAOException("Can't close ResultSet", e);
-      }
-      try{
-        if(null != st){
-          st.close();
-        }
-      }catch(Exception e){
-        exc = new DAOException("Can't close Statement", e);
-      }
-      if(null != exc){
-        throw exc;
-      }
     }
   }
 
   public void delete(int id)
   throws DAOException{
-    Statement st = null;
-    Integer num = 0;
-    ResultSet rs = null;
-    try{
-      st = connection.createStatement();
-      String query = getDeleteQuery(id);
-      num = st.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
-    }catch(Exception e){
-      throw new DAOException("Can't delete record", e);
-    }finally{
-      DAOException exc = null;
-      try{
-        if(null != rs){
-          rs.close();
+    synchronized(lock){
+        Statement st = null;
+        Integer num = 0;
+        ResultSet rs = null;
+        try{
+          st = connection.createStatement();
+          String query = getDeleteQuery(id);
+          num = st.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
+        }catch(Exception e){
+          throw new DAOException("Can't delete record", e);
+        }finally{
+          DAOException exc = null;
+          try{
+            if(null != rs){
+              rs.close();
+            }
+          }catch(Exception e){
+            exc = new DAOException("Can't close ResultSet", e);
+          }
+          try{
+            if(null != st){
+              st.close();
+            }
+          }catch(Exception e){
+            exc = new DAOException("Can't close Statement", e);
+          }
+          if(null != exc){
+            throw exc;
+          }
         }
-      }catch(Exception e){
-        exc = new DAOException("Can't close ResultSet", e);
-      }
-      try{
-        if(null != st){
-          st.close();
-        }
-      }catch(Exception e){
-        exc = new DAOException("Can't close Statement", e);
-      }
-      if(null != exc){
-        throw exc;
-      }
     }
   }
 

@@ -15,29 +15,24 @@ import net.lessons.dao.*;
 
 public class ServletWithData extends HttpServlet {
     
-  private List<String> headCar = new ArrayList<String>();
-  private List<String> headCompany = new ArrayList<String>();
-  private List<String> headService = new ArrayList<String>();
+    private InterfaceDAO daoCar = null;
+    private InterfaceDAO daoComp = null;
+    private InterfaceDAO daoServ = null;
 
   /**
    * this life-cycle method is invoked when this servlet is first accessed
    * by the client
    */
-  public void init(ServletConfig config) {
+  public void init(ServletConfig config){
     System.out.println("Servlet is being initialized");
-    
-    headCar.add("id");
-    headCar.add("mark");
-    headCar.add("model");
-    
-    headCompany.add("id");
-    headCompany.add("name");
-    
-    headService.add("id");
-    headService.add("date");
-    headService.add("price");
-    headService.add("car id");
-    headService.add("company id");
+    try{
+        DAOFactory factory = new DAOFactory();
+        daoCar = factory.getDAO(CarDTO.class);
+        daoComp = factory.getDAO(CompanyDTO.class);
+        daoServ = factory.getDAO(ServiceDTO.class);
+    }catch(DAOException e){
+        System.out.println(e);
+    }
   }
 
   /**
@@ -48,18 +43,12 @@ public class ServletWithData extends HttpServlet {
 //    Connection connection = null ;
 //    Statement statement   = null;
 
-    InterfaceDAO daoCar = null;
-    InterfaceDAO daoComp = null;
-    InterfaceDAO daoServ = null;
     try{
-      DAOFactory factory = new DAOFactory();
-      
       String htmlHeader  = getHeader("Servlet With Data");
       writer.println(htmlHeader);
       
       //table cars
-      daoCar = factory.getDAO(CarDTO.class);
-      String tableHeader = getTableHeader(headCar);
+      String tableHeader = getTableHeader();
       writer.println(tableHeader);
       String tableRows = fealTableByCars(daoCar.getAll());
       writer.println(tableRows);
@@ -67,8 +56,7 @@ public class ServletWithData extends HttpServlet {
       writer.println(tableFooter);
       
       //table company
-      daoComp = factory.getDAO(CompanyDTO.class);
-      tableHeader = getTableHeader(headCompany);
+      tableHeader = getTableHeader();
       writer.println(tableHeader);
       tableRows = fealTableByComp(daoComp.getAll());
       writer.println(tableRows);
@@ -76,8 +64,7 @@ public class ServletWithData extends HttpServlet {
       writer.println(tableFooter);
       
       //table service
-      daoServ = factory.getDAO(ServiceDTO.class);
-      tableHeader = getTableHeader(headService);
+      tableHeader = getTableHeader();
       writer.println(tableHeader);
       tableRows = fealTableByServ(daoServ.getAll());
       writer.println(tableRows);
@@ -92,27 +79,6 @@ public class ServletWithData extends HttpServlet {
     } catch (Exception e) {
       writer.println("An error occured while retrieving data: "+ e.toString());
     }finally {
-      try{
-        if(daoCar != null){
-            daoCar.close();
-        }
-      }catch(DAOException e){
-          System.out.println(e);
-      }
-      try{
-        if(daoComp != null){
-            daoComp.close();
-        }
-      }catch(DAOException e){
-          System.out.println(e);
-      }
-      try{
-        if(daoServ != null){
-            daoServ.close();
-        }
-      }catch(DAOException e){
-          System.out.println(e);
-      }
       writer.flush();
     }
     writer.close();
@@ -135,6 +101,27 @@ public class ServletWithData extends HttpServlet {
    * is shutting down
    */
   public void destroy() {
+    try{
+        if(daoCar != null){
+            daoCar.close();
+        }
+    }catch(DAOException e){
+        System.out.println(e);
+    }
+    try{
+        if(daoComp != null){
+            daoComp.close();
+        }
+    }catch(DAOException e){
+        System.out.println(e);
+    }
+    try{
+        if(daoServ != null){
+            daoServ.close();
+        }
+    }catch(DAOException e){
+        System.out.println(e);
+    }
     System.out.println("Servlet is being destroyed");
   }
 
@@ -149,48 +136,21 @@ public class ServletWithData extends HttpServlet {
     return htmlFooter;
   }
   //create web table
-  private String getTableHeader(List<String> head){
+  private String getTableHeader(){
     String tableHeader = null;
     tableHeader = "<TABLE border=1>";
-    String tableHead   = getTableHead(head);
-    return tableHeader + tableHead;
+    return tableHeader;
   }
   private String getTableFooter(){
     String tableHeader = "</TABLE>";
     return tableHeader;
   }
-  //teble head
-  private String getTableHead(List<String> head){
-    int vsize = head.size();
-    String contents = new String();
-    contents = "<tr>";
-    for(int i = 0; i < vsize; i++){
-      String value = head.get(i).toString();
-      contents += "<th>" + value +"</th>";
-    }
-    contents += "</tr>\n";
-    return contents;
-  }
-/*  private String getTableRow(Vector<String> head, ResultSet rs) throws SQLException{
-    int vsize = head.size();
-    String contents = new String();
-    try{
-      while(rs.next()){
-        contents += "<tr>";
-        for(int i = 0; i < vsize; i++){
-          String value = head.elementAt(i).toString();
-          contents += "<th>" + rs.getString(value) +"</th>";
-        }
-        contents +=  "</tr>\n";
-      }
-    }catch (SQLException e){
-      throw e;
-    }
-    return contents;
-  }*/
+
+  
   // table content
   private String fealTableByCars(List<CarDTO> rows){
       String contents = new String();
+      contents = "<tr><th>id</th><th>mark</th><th>model</th></tr>\n";
       for(int i = 0; i<rows.size(); i++){
         CarDTO car = rows.get(i);
         contents += "<tr>";
@@ -204,6 +164,7 @@ public class ServletWithData extends HttpServlet {
   
   private String fealTableByComp(List<CompanyDTO> rows){
       String contents = new String();
+      contents = "<tr><th>id</th><th>name</th></tr>\n";
       for(int i = 0; i<rows.size(); i++){
         CompanyDTO comp = rows.get(i);
         contents += "<tr>";
@@ -216,6 +177,7 @@ public class ServletWithData extends HttpServlet {
   
   private String fealTableByServ(List<ServiceDTO> rows){
       String contents = new String();
+      contents = "<tr><th>id</th><th>date</th><th>price</th><th>car id</th><th>company id</th></tr>";
       for(int i = 0; i<rows.size(); i++){
         ServiceDTO serv = rows.get(i);
         contents += "<tr>";
