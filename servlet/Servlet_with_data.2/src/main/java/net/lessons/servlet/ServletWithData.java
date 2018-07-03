@@ -2,11 +2,11 @@ package net.lessons.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-//import java.text.DateFormat;
-//import java.text.SimpleDateFormat;
-//import java.util.ArrayList;
 import java.sql.Date;
 import java.util.List;
+
+import java.util.regex.Matcher;  
+import java.util.regex.Pattern; 
 
 //import javax.servlet.ServletException;
 import javax.servlet.ServletConfig;
@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.lessons.dao.*;
 
 public class ServletWithData extends HttpServlet {
-    
+
     private InterfaceDAO daoCar = null;
     private InterfaceDAO daoComp = null;
     private InterfaceDAO daoServ = null;
@@ -42,12 +42,13 @@ public class ServletWithData extends HttpServlet {
    * handles HTTP GET request
    */
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    PrintWriter writer    = response.getWriter();
+    PrintWriter writer = null;
 
     try{
+      writer = response.getWriter();
       String htmlHeader  = getHeader("Servlet With Data");
       writer.println(htmlHeader);
-      
+
       //table cars
       String tableHeader = getTableHeader();
       writer.println(tableHeader);
@@ -55,7 +56,7 @@ public class ServletWithData extends HttpServlet {
       writer.println(tableRows);
       String tableFooter = getTableFooter();
       writer.println(tableFooter);
-      
+
       //table company
       tableHeader = getTableHeader();
       writer.println(tableHeader);
@@ -63,7 +64,7 @@ public class ServletWithData extends HttpServlet {
       writer.println(tableRows);
       tableFooter = getTableFooter();
       writer.println(tableFooter);
-      
+
       //table service
       tableHeader = getTableHeader();
       writer.println(tableHeader);
@@ -71,28 +72,36 @@ public class ServletWithData extends HttpServlet {
       writer.println(tableRows);
       tableFooter = getTableFooter();
       writer.println(tableFooter);
-      
+
       String htmlFooter  = getFooter();
       writer.println(htmlFooter);
-
-      //writer.println("<html>Hello from Simple Java servlet!</html>");
-
+    }catch(NullPointerException e){
+        String text = null;
+        if(daoCar == null || daoComp == null || daoServ == null){
+            text = "One or more DAO objects does not exist. Probably some problems with DB connection.";
+        }else{
+            text = "Error occured: " + e;
+        }
+        writer.flush();
+        writer.println(text);
     } catch (Exception e) {
-      writer.println("An error occured while retrieving data: "+ e.toString());
+      writer.println("An error occured while retrieving data: " + e.toString());
     }finally {
-      writer.flush();
+      if(writer != null){
+        writer.flush();
+        writer.close();
+      }
     }
-    writer.close();
   }
 
   /**
    * handles HTTP POST request
    */
-  public void doPost(HttpServletRequest request, HttpServletResponse response) 
+  public void doPost(HttpServletRequest request, HttpServletResponse response)
   throws IOException {
     String action = request.getParameter("action");
     String objType = request.getParameter("object");
-    
+
     String idStr = null;
     int id = 0;
     Boolean doget = true;
@@ -100,7 +109,7 @@ public class ServletWithData extends HttpServlet {
         switch(action){
             case "createrequest":
                 doget = false;
-                printCreateForm(request, response);
+                printCreateUpdateForm(request, response);
                 break;
             case "create":
                 switch(objType){
@@ -115,15 +124,20 @@ public class ServletWithData extends HttpServlet {
                         break;
                     case "service":
                         String dateStr = request.getParameter("date");
-                        //DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                        Date date = java.sql.Date.valueOf(dateStr);
                         String priceStr = request.getParameter("price");
-                        Float price = Float.parseFloat(priceStr);
-                        String carStr = request.getParameter("carid");
-                        int car = Integer.parseInt(carStr);
-                        String compStr = request.getParameter("companyid");
-                        int comp = Integer.parseInt(compStr);
-                        daoServ.add(new ServiceDTO(date, price, car, comp));
+                        //DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                        if(checkDateFormat(dateStr) && checkPriceFormat(priceStr)){
+                            Date date = java.sql.Date.valueOf(dateStr);
+                            Float price = Float.parseFloat(priceStr);
+                            String carStr = request.getParameter("carid");
+                            int car = Integer.parseInt(carStr);
+                            String compStr = request.getParameter("companyid");
+                            int comp = Integer.parseInt(compStr);
+                            daoServ.add(new ServiceDTO(date, price, car, comp));
+                        }else{
+                            doget = false;
+                            printText(response, "Error: illegal value(s).");
+                        }
                         break;
                 }
                 break;
@@ -161,27 +175,40 @@ public class ServletWithData extends HttpServlet {
                         break;
                     case "service":
                         String dateStr = request.getParameter("date");
-                        //DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                        Date date = java.sql.Date.valueOf(dateStr);
                         String priceStr = request.getParameter("price");
-                        Float price = Float.parseFloat(priceStr);
-                        String carStr = request.getParameter("carid");
-                        int car = Integer.parseInt(carStr);
-                        String compStr = request.getParameter("companyid");
-                        int comp = Integer.parseInt(compStr);
-                        daoServ.update(new ServiceDTO(id, date, price, car, comp));
+                        if(checkDateFormat(dateStr) && checkPriceFormat(priceStr)){
+                            Date date = java.sql.Date.valueOf(dateStr);
+                            Float price = Float.parseFloat(priceStr);
+                            String carStr = request.getParameter("carid");
+                            int car = Integer.parseInt(carStr);
+                            String compStr = request.getParameter("companyid");
+                            int comp = Integer.parseInt(compStr);
+                            daoServ.update(new ServiceDTO(id, date, price, car, comp));
+                        }else{
+                            doget = false;
+                        }
                         break;
                 }
                 break;
             case "updaterequest":
                 doget = false;
-                printUpdateForm(request, response);
+                printCreateUpdateForm(request, response);
                 break;
             default:
                 break;
         }
+    }catch(NullPointerException e){
+        String text = null;
+        if(daoCar == null || daoComp == null || daoServ == null){
+            text = "One or more DAO objects does not exist. Probably some problems with DB connection.";
+        }else{
+            text = "Error occured: " + e;
+        }
+        doget = false;
+        printText(response, text);
     }catch(Exception e){
-        System.out.println(e);
+        doget = false;
+        printText(response, "Error occured: " + e);
     }finally{
         if(doget){
             doGet(request, response);
@@ -239,7 +266,7 @@ public class ServletWithData extends HttpServlet {
     return tableHeader;
   }
 
-  
+
   // table content
   private String fealTableByCars(List<CarDTO> rows){
       String contents = new String();
@@ -257,7 +284,7 @@ public class ServletWithData extends HttpServlet {
       }
       return contents;
   }
-  
+
   private String fealTableByComp(List<CompanyDTO> rows){
       String contents = new String();
       contents = "<tr><th>id</th><th>name</th>\n" +
@@ -273,7 +300,7 @@ public class ServletWithData extends HttpServlet {
       }
       return contents;
   }
-  
+
   private String fealTableByServ(List<ServiceDTO> rows){
       String contents = new String();
       contents = "<tr><th>id</th><th>date</th><th>price</th><th>car id</th><th>company id</th>" +
@@ -292,7 +319,7 @@ public class ServletWithData extends HttpServlet {
       }
       return contents;
   }
-  
+
   private String getCreateButton(String type){
       String contents = "<form action=\"./\" method=\"post\">" +
               "<input type=\"hidden\" name=\"action\" value=\"createrequest\"/>\n" +
@@ -301,7 +328,7 @@ public class ServletWithData extends HttpServlet {
               "</form>";
       return contents;
   }
-  
+
   private String getUpdateButton(String type, int id){
       String contents = "<form action=\"./\" method=\"post\">\n" +
             "<input type=\"hidden\" name=\"action\" value=\"updaterequest\"/>\n" +
@@ -311,7 +338,7 @@ public class ServletWithData extends HttpServlet {
             "</form>";
       return contents;
   }
-  
+
   private String getDeleteButton(String type, int id){
       String contents = "<form action=\"./\" method=\"post\">\n" +
             "<input type=\"hidden\" name=\"action\" value=\"delete\"/>\n" +
@@ -321,137 +348,105 @@ public class ServletWithData extends HttpServlet {
             "</form>";
       return contents;
   }
-  
-  private void printCreateForm(HttpServletRequest request, HttpServletResponse response)
-  throws IOException, DAOException{
+
+  private void printCreateUpdateForm(HttpServletRequest request, HttpServletResponse response)
+  throws Exception {
     String objType = request.getParameter("object");
-    
-    String htmlHeader = null;
-    String htmlFooter = null;
-    PrintWriter writer = null;
-    try{
-        writer = response.getWriter();
-        htmlHeader  = getHeader("Servlet With Data");
-        writer.println(htmlHeader);
-        writer.println("Hello! You send create request for object type " + objType + ". ");
-        String contents = "<form action=\"./\" method=\"post\">\n" +
-                "<input type=\"hidden\" name=\"action\" value=\"create\"/>\n" +
-                            //"<input type=\"hidden\" name=\"id\" value=\"" + id + "\"/>\n" +
-                "<input type=\"hidden\" name=\"object\" value=\"" + objType + "\"/>\n";
-        switch(objType){
-            case "car":
-                contents += "New Car " +
-                    " mark: <input type=\"text\" name=\"mark\" size=\"30\" placeholder=\"mark\"/>\n" +
-                    " model: <input type=\"text\" name=\"model\" size=\"30\" placeholder=\"model\"/>\n";
-                break;
-            case "company":
-                contents += "New Company " +
-                    " name: <input type=\"text\" name=\"name\" size=\"50\" placeholder=\"Company name\"/>\n";
-                break;
-            case "service":
-                    contents += "New service record " +
-                        " date: <input type=\"text\" name=\"date\" size=\"10\" placeholder=\"YYYY-MM-DD\"/>\n" +
-                        " price: <input type=\"number\" name=\"price\" size=\"5\" placeholder=\"n.nn\" step=\"any\"/>\n" +
-                        " car id : " +
-                        " <select name=\"carid\">\n";
-                    List<CarDTO> cars = daoCar.getAll();
-                    for(int i = 0; i < cars.size(); i++){
-                        CarDTO car = cars.get(i);
-                        contents += "    <option value=\"" + car.getId() + "\">" + car.toString() + "</option>\n";
-                    }
-                    contents += " </select>";
-                    contents += " company id: <select name=\"companyid\"/>\n";
-                    List<CompanyDTO> comps = daoComp.getAll();
-                    for(int i = 0; i < comps.size(); i++){
-                        CompanyDTO comp = comps.get(i);
-                        contents += "    <option value=\"" + comp.getId() + "\">" + comp.toString() + "</option>\n";
-                    }
-                    contents += " </select>";
-                    break;
-            default:
-                contents += "Error: type \"" + objType + "\" does not exist!";
-        }
-        contents += "<input type=\"submit\" value=\"Submit\" />\n" +
-            "</form>";
-        writer.println(contents);
-        contents = "<form action=\"./\" method=\"post\">\n" +
-            "<input type=\"hidden\" name=\"action\" value=\"cancel\"/>\n" +
-            "<input type=\"hidden\" name=\"object\" value=\"" + objType + "\"/>\n" +
-            "<input type=\"submit\" value=\"Cancel\" />\n" +
-            "</form>";
-        writer.println(contents);
-        htmlFooter  = getFooter();
-        writer.println(htmlFooter);
-    }catch(DAOException e){
-        System.out.println(e);
-    }finally{
-        if(writer != null){
-            writer.flush();
-            writer.close();
-        } 
-    }
-  }
-  
-  private void printUpdateForm(HttpServletRequest request, HttpServletResponse response) 
-  throws IOException {
     String action = request.getParameter("action");
-    String objType = request.getParameter("object");
-    
+
     String idStr = null;
     int id = 0;
-    Boolean doget = true;
     String htmlHeader = null;
     String htmlFooter = null;
     PrintWriter writer = null;
     try{
-        idStr = request.getParameter("id");
-        id = Integer.parseInt(idStr);
         writer = response.getWriter();
         htmlHeader = getHeader("Servlet With Data");
         writer.println(htmlHeader);
-        writer.println("Hello! You send update request for object type " + objType + ". ");
+        String nextAction = null;
+        writer.println("Hello!");
+        switch(action){
+          case "createrequest":
+            nextAction = "create";
+            writer.println("You send create request for object type " + objType + ". ");
+            break;
+          case "updaterequest":
+            idStr = request.getParameter("id");
+            id = Integer.parseInt(idStr);
+            nextAction = "update";
+            writer.println("You send update request for object type " + objType + ". ");
+            break;
+          default:
+            writer.println("Wrong action! Create or update request neaded. " + action + " is given.");
+            throw new IOException("Wrong action! Create or update request neaded. " + action + " is given.");
+        }
+        writer.println("<br>");
         String contents = "<form action=\"./\" method=\"post\">\n" +
-            "<input type=\"hidden\" name=\"action\" value=\"update\"/>\n" +
-            "<input type=\"hidden\" name=\"id\" value=\"" + id + "\"/>\n" +
-            "<input type=\"hidden\" name=\"object\" value=\"" + objType + "\"/>\n";
+            "<input type=\"hidden\" name=\"action\" value=\"" + nextAction + "\"/>\n";
+        if(nextAction == "update"){
+            contents += "<input type=\"hidden\" name=\"id\" value=\"" + id + "\"/>\n";
+        }
+        contents += "<input type=\"hidden\" name=\"object\" value=\"" + objType + "\"/>\n";
         switch(objType){
             case "car":
-                CarDTO car = (CarDTO) daoCar.getById(id);
-                contents += "Car with id \"" + id + "\" " +
-                    " mark: <input type=\"text\" name=\"mark\" size=\"30\" placeholder=\"mark\" value=\"" + car.getMark() + "\"/>\n" +
-                    " model: <input type=\"text\" name=\"model\" size=\"30\" placeholder=\"model\" value=\"" + car.getModel() + "\"/>\n";
+                String tmpValueMark = "";
+                String tmpValueModel = "";
+                if(nextAction == "create"){
+                  contents += "New Car ";
+                }else{
+                  CarDTO car = (CarDTO) daoCar.getById(id);
+                  contents += "Car with id \"" + id + "\" ";
+                  tmpValueMark = " value=\"" + car.getMark() + "\"";
+                  tmpValueModel = " value=\"" + car.getModel() + "\"";
+                }
+                contents += " mark: <input type=\"text\" name=\"mark\" size=\"30\" placeholder=\"mark\" " + tmpValueMark + "/>\n" +
+                    " model: <input type=\"text\" name=\"model\" size=\"30\" placeholder=\"model\" " + tmpValueModel + "/>\n";
                 break;
             case "company":
-                CompanyDTO comp = (CompanyDTO) daoComp.getById(id);
-                contents += "Company with id \"" + id +"\"" +
-                    " name: <input type=\"text\" name=\"name\" size=\"50\" placeholder=\"Company name\" value=\"" + comp.getName() + "\"/>\n";
+                String tmpValueName = "";
+                if(nextAction == "create"){
+                  contents += "New Company ";
+                }else{
+                  CompanyDTO comp = (CompanyDTO) daoComp.getById(id);
+                  contents += "Company with id \"" + id +"\"";
+                  tmpValueName = "value=\"" + comp.getName() + "\"";
+                }
+                contents += " name: <input type=\"text\" name=\"name\" size=\"50\" placeholder=\"Company name\" " + tmpValueName + "/>\n";
                 break;
             case "service":
-                ServiceDTO serv = (ServiceDTO) daoServ.getById(id);
-                contents += "New service record " +
-                    " date: <input type=\"text\" name=\"date\" size=\"10\" placeholder=\"YYYY-MM-DD\" value=\"" + serv.getDate() + "\"/>\n" +
-                    " price: <input type=\"number\" name=\"price\" size=\"5\" placeholder=\"n.nn\" value=\"" + serv.getPrice() + "\" step=\"any\"/>\n" +
-                    " car id : " +
-                    " <select name=\"carid\">\n";
+                ServiceDTO serv = null;
+                String tmpValueDate = "";
+                String tmpValuePrice = "";
+                if(nextAction == "create"){
+                  contents += "New service record ";
+                }else{
+                  serv = (ServiceDTO) daoServ.getById(id);
+                  contents += "Service record with id \"" + id + "\"";
+                  tmpValueDate = " value=\"" + serv.getDate() + "\"";
+                  tmpValuePrice = " value=\"" + serv.getPrice() + "\"";
+                }
+                contents += " date: <input type=\"text\" name=\"date\" size=\"10\" placeholder=\"YYYY-MM-DD\" " + tmpValueDate + "/>\n";
+                contents += " price: <input type=\"number\" name=\"price\" size=\"5\" placeholder=\"n.nn\" step=\"any\" " + tmpValuePrice + "/>\n";
+                contents += " car id : <select name=\"carid\">\n";
                 List<CarDTO> cars = daoCar.getAll();
                 for(int i = 0; i < cars.size(); i++){
-                    CarDTO car1 = cars.get(i);
+                    CarDTO car = cars.get(i);
                     contents += "    <option ";
-                    if(serv.getCar() == car1.getId()){
+                    if(serv != null && serv.getCar() == car.getId()){
                         contents += "selected=\"selected\" ";
                     }
-                    contents += "value=\"" + car1.getId() + "\">" + car1.toString() + "</option>\n";
+                    contents += "value=\"" + car.getId() + "\">" + car.toString() + "</option>\n";
                 }
                 contents += " </select>";
                 contents += " company id: <select name=\"companyid\"/>\n";
                 List<CompanyDTO> comps = daoComp.getAll();
                 for(int i = 0; i < comps.size(); i++){
-                    CompanyDTO comp1 = comps.get(i);
+                    CompanyDTO comp = comps.get(i);
                     contents += "    <option ";
-                    if(serv.getCompany() == comp1.getId()){
+                    if(serv != null && serv.getCompany() == comp.getId()){
                         contents += "selected=\"selected\" ";
                     }
-                    contents += "value=\"" + comp1.getId() + "\">" + comp1.toString() + "</option>\n";
+                    contents += "value=\"" + comp.getId() + "\">" + comp.toString() + "</option>\n";
                 }
                 contents += " </select>";
                 break;
@@ -469,13 +464,39 @@ public class ServletWithData extends HttpServlet {
         writer.println(contents);
         htmlFooter  = getFooter();
         writer.println(htmlFooter);
-    }catch(DAOException e){
-        System.out.println(e);
+    }catch(Exception e){
+        throw e;
     }finally{
         if(writer != null){
             writer.flush();
             writer.close();
-        } 
+        }
     }
+  }
+  
+  private boolean checkDateFormat(String date){
+      Pattern p = Pattern.compile("^((19)|(20))[\\d]{2}-((1[0-2])|(0?[1-9]))-(([12][0-9])|(3[01])|(0?[1-9]))$");  
+      Matcher m = p.matcher(date);  
+      return m.matches();
+  }
+  
+  private boolean checkPriceFormat(String price)
+  throws IOException{
+      try{
+        Pattern p = Pattern.compile("^\\d+.?\\d*$");  
+        Matcher m = p.matcher(price);
+        Float priceVal = Float.parseFloat(price);
+        return (priceVal >= 0.00f) && m.matches();
+      }catch(Exception e){
+        throw new IOException("Price has illegal values");
+      }
+  }
+  
+  private void printText(HttpServletResponse response, String text)
+  throws IOException{
+        PrintWriter writer = response.getWriter();
+        writer.println(text);
+        writer.flush();
+        writer.close();
   }
 }
