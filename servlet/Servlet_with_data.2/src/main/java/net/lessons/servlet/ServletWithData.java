@@ -169,32 +169,11 @@ public class ServletWithData extends HttpServlet {
     System.out.println("Servlet is being destroyed");
   }
 
-  //create web page header and footer
-  private String getHeader(String title){
-    String htmlHeader = null;
-    htmlHeader = "<HTML><HEAD><TITLE> " + title + " </TITLE></HEAD><BODY>";
-    return htmlHeader;
-  }
-  private String getFooter(){
-    String htmlFooter = "</BODY></HTML>";
-    return htmlFooter;
-  }
-  //create web table
-  private String getTableHeader(){
-    String tableHeader = null;
-    tableHeader = "<TABLE border=1>";
-    return tableHeader;
-  }
-  private String getTableFooter(){
-    String tableHeader = "</TABLE>";
-    return tableHeader;
-  }
-
-
   // table content
   private String fealTableByCars(List<CarDTO> rows){
       String contents = new String();
-      contents = "<tr><th>id</th><th>mark</th><th>model</th>" +
+      contents = "<TABLE border=1>" +
+              "<tr><th>id</th><th>mark</th><th>model</th>" +
               "<th>" + getCreateButton("car") + "</th></tr>\n";
       for(int i = 0; i<rows.size(); i++){
         CarDTO car = rows.get(i);
@@ -206,12 +185,14 @@ public class ServletWithData extends HttpServlet {
         contents += "<td>" + getDeleteButton("car", car.getId()) +"</td>";
         contents +=  "</tr>\n";
       }
+      contents += "</TABLE>";
       return contents;
   }
 
   private String fealTableByComp(List<CompanyDTO> rows){
       String contents = new String();
-      contents = "<tr><th>id</th><th>name</th>\n" +
+      contents = "<TABLE border=1>" +
+              "<tr><th>id</th><th>name</th>\n" +
               "<th>" + getCreateButton("company") + "</th></tr>\n";
       for(int i = 0; i<rows.size(); i++){
         CompanyDTO comp = rows.get(i);
@@ -222,12 +203,14 @@ public class ServletWithData extends HttpServlet {
         contents += "<td>" + getDeleteButton("company", comp.getId()) + "</td>";
         contents +=  "</tr>\n";
       }
+      contents += "</TABLE>";
       return contents;
   }
 
   private String fealTableByServ(List<ServiceDTO> rows){
       String contents = new String();
-      contents = "<tr><th>id</th><th>date</th><th>price</th><th>car id</th><th>company id</th>" +
+      contents = "<TABLE border=1>" +
+              "<tr><th>id</th><th>date</th><th>price</th><th>car id</th><th>company id</th>" +
               "<th>" + getCreateButton("service") + "</th></tr>\n";
       for(int i = 0; i<rows.size(); i++){
         ServiceDTO serv = rows.get(i);
@@ -241,6 +224,7 @@ public class ServletWithData extends HttpServlet {
         contents += "<td>" + getDeleteButton("service", serv.getId()) + "</td>";
         contents +=  "</tr>\n";
       }
+      contents += "</TABLE>";
       return contents;
   }
 
@@ -277,34 +261,19 @@ public class ServletWithData extends HttpServlet {
   throws Exception{
     try{
       PrintWriter writer = response.getWriter();
-      String htmlHeader  = getHeader("Servlet With Data");
+      String htmlHeader  = "<HTML><HEAD><TITLE> Servlet With Data </TITLE></HEAD><BODY>";
       writer.println(htmlHeader);
 
-      //table cars
-      String tableHeader = getTableHeader();
-      writer.println(tableHeader);
       String tableRows = fealTableByCars(daoCar.getAll());
       writer.println(tableRows);
-      String tableFooter = getTableFooter();
-      writer.println(tableFooter);
 
-      //table company
-      tableHeader = getTableHeader();
-      writer.println(tableHeader);
       tableRows = fealTableByComp(daoComp.getAll());
       writer.println(tableRows);
-      tableFooter = getTableFooter();
-      writer.println(tableFooter);
 
-      //table service
-      tableHeader = getTableHeader();
-      writer.println(tableHeader);
       tableRows = fealTableByServ(daoServ.getAll());
       writer.println(tableRows);
-      tableFooter = getTableFooter();
-      writer.println(tableFooter);
 
-      String htmlFooter  = getFooter();
+      String htmlFooter  = "</BODY></HTML>";
       writer.println(htmlFooter);
     }catch(NullPointerException e){
         String text = null;
@@ -388,17 +357,6 @@ public class ServletWithData extends HttpServlet {
 
   // print create and update forms
 
-  private String getFormHeader(String action, String objType){
-      String message = "You send " + action + " request for object type " + objType + ".<br>";
-      String formHead = "<form action=\"./\" method=\"post\">\n" +
-          "<input type=\"hidden\" name=\"action\" value=\"" + action + objType + "\"/>\n";
-      return message + formHead;
-  }
-
-  private String getFormFooter(){
-    return "<input type=\"submit\" value=\"Submit\" /></form>";
-  }
-
   private String getCancelForm(){
     String contents = "<form action=\"./\" method=\"post\">\n" +
         "<input type=\"hidden\" name=\"action\" value=\"cancel\"/>\n" +
@@ -411,20 +369,21 @@ public class ServletWithData extends HttpServlet {
   throws Exception {
     try{
         PrintWriter writer = response.getWriter();
-        String htmlHeader = getHeader("Servlet With Data");
+        String htmlHeader = "<HTML><HEAD><TITLE> Servlet With Data </TITLE></HEAD><BODY>";
         writer.println(htmlHeader);
-        //int id = 0;
 
-        String contents = getFormHeader("create", "car");
+        String contents = "You send create request for object type car.<br>" +
+            "<form action=\"./\" method=\"post\">\n" +
+            "<input type=\"hidden\" name=\"action\" value=\"createcar\"/>\n";
         contents += "New Car ";
         contents += " mark: <input type=\"text\" name=\"mark\" size=\"30\" placeholder=\"mark\"/>\n" +
                     " model: <input type=\"text\" name=\"model\" size=\"30\" placeholder=\"model\"/>\n";
 
-        contents += getFormFooter();
+        contents += "<input type=\"submit\" value=\"Submit\" /></form>";
         writer.println(contents);
         contents = getCancelForm();
         writer.println(contents);
-        String htmlFooter  = getFooter();
+        String htmlFooter  = "</BODY></HTML>";
         writer.println(htmlFooter);
     }catch(Exception e){
         throw e;
@@ -435,11 +394,13 @@ public class ServletWithData extends HttpServlet {
   throws Exception {
     try{
         PrintWriter writer = response.getWriter();
-        String htmlHeader = getHeader("Servlet With Data");
+        String htmlHeader = "<HTML><HEAD><TITLE> Servlet With Data </TITLE></HEAD><BODY>";
         writer.println(htmlHeader);
         int id = Integer.parseInt(request.getParameter("id"));
 
-        String contents = getFormHeader("update", "car");
+        String contents = "You send update request for object type car.<br>" +
+            "<form action=\"./\" method=\"post\">\n" +
+            "<input type=\"hidden\" name=\"action\" value=\"updatecar\"/>\n";
         contents += "<input type=\"hidden\" name=\"id\" value=\"" + id + "\"/>\n";
         CarDTO car = (CarDTO) daoCar.getById(id);
         String mark = car.getMark();
@@ -448,11 +409,11 @@ public class ServletWithData extends HttpServlet {
         contents += " mark: <input type=\"text\" name=\"mark\" size=\"30\" placeholder=\"mark\" value=\"" + mark + "\"/>\n" +
                     " model: <input type=\"text\" name=\"model\" size=\"30\" placeholder=\"model\" value=\"" + model + "\"/>\n";
 
-        contents += getFormFooter();
+        contents += "<input type=\"submit\" value=\"Submit\" /></form>";
         writer.println(contents);
         contents = getCancelForm();
         writer.println(contents);
-        String htmlFooter  = getFooter();
+        String htmlFooter  = "</BODY></HTML>";
         writer.println(htmlFooter);
     }catch(Exception e){
         throw e;
@@ -463,20 +424,21 @@ public class ServletWithData extends HttpServlet {
   throws Exception {
     try{
         PrintWriter writer = response.getWriter();
-        String htmlHeader = getHeader("Servlet With Data");
+        String htmlHeader = "<HTML><HEAD><TITLE> Servlet With Data </TITLE></HEAD><BODY>";
         writer.println(htmlHeader);
-        //int id = 0;
 
-        String contents = getFormHeader("create", "company");
+        String contents = "You send create request for object type company.<br>" +
+            "<form action=\"./\" method=\"post\">\n" +
+            "<input type=\"hidden\" name=\"action\" value=\"createcompany\"/>\n";
 
         contents += "New Company ";
         contents += " name: <input type=\"text\" name=\"name\" size=\"50\" placeholder=\"Company name\"/>\n";
 
-        contents += getFormFooter();
+        contents += "<input type=\"submit\" value=\"Submit\" /></form>";
         writer.println(contents);
         contents = getCancelForm();
         writer.println(contents);
-        String htmlFooter  = getFooter();
+        String htmlFooter  = "</BODY></HTML>";
         writer.println(htmlFooter);
     }catch(Exception e){
         throw e;
@@ -487,11 +449,13 @@ public class ServletWithData extends HttpServlet {
   throws Exception {
     try{
         PrintWriter writer = response.getWriter();
-        String htmlHeader = getHeader("Servlet With Data");
+        String htmlHeader = "<HTML><HEAD><TITLE> Servlet With Data </TITLE></HEAD><BODY>";
         writer.println(htmlHeader);
 
         int id = Integer.parseInt(request.getParameter("id"));
-        String contents = getFormHeader("update", "company");
+        String contents = "You send update request for object type company.<br>" +
+            "<form action=\"./\" method=\"post\">\n" +
+            "<input type=\"hidden\" name=\"action\" value=\"updatecompany\"/>\n";
 
         contents += "<input type=\"hidden\" name=\"id\" value=\"" + id + "\"/>\n";
         CompanyDTO comp = (CompanyDTO) daoComp.getById(id);
@@ -499,11 +463,11 @@ public class ServletWithData extends HttpServlet {
         contents += "Company with id \"" + id +"\"";
         contents += " name: <input type=\"text\" name=\"name\" size=\"50\" placeholder=\"Company name\" value=\"" + name + "\"/>\n";
 
-        contents += getFormFooter();
+        contents += "<input type=\"submit\" value=\"Submit\" /></form>";
         writer.println(contents);
         contents = getCancelForm();
         writer.println(contents);
-        String htmlFooter  = getFooter();
+        String htmlFooter  = "</BODY></HTML>";
         writer.println(htmlFooter);
     }catch(Exception e){
         throw e;
@@ -514,11 +478,12 @@ public class ServletWithData extends HttpServlet {
   throws Exception {
     try{
         PrintWriter writer = response.getWriter();
-        String htmlHeader = getHeader("Servlet With Data");
+        String htmlHeader = "<HTML><HEAD><TITLE> Servlet With Data </TITLE></HEAD><BODY>";
         writer.println(htmlHeader);
-        //int id = 0;
 
-        String contents = getFormHeader("create", "service");
+        String contents = "You send create request for object type service.<br>" +
+            "<form action=\"./\" method=\"post\">\n" +
+            "<input type=\"hidden\" name=\"action\" value=\"createservice\"/>\n";
 
         contents += "New service record ";
         contents += " date: <input type=\"text\" name=\"date\" size=\"10\" placeholder=\"YYYY-MM-DD\"/>\n";
@@ -540,11 +505,11 @@ public class ServletWithData extends HttpServlet {
         }
         contents += " </select>";
 
-        contents += getFormFooter();
+        contents += "<input type=\"submit\" value=\"Submit\" /></form>";
         writer.println(contents);
         contents = getCancelForm();
         writer.println(contents);
-        String htmlFooter  = getFooter();
+        String htmlFooter  = "</BODY></HTML>";
         writer.println(htmlFooter);
     }catch(Exception e){
         throw e;
@@ -555,11 +520,13 @@ public class ServletWithData extends HttpServlet {
   throws Exception {
     try{
         PrintWriter writer = response.getWriter();
-        String htmlHeader = getHeader("Servlet With Data");
+        String htmlHeader = "<HTML><HEAD><TITLE> Servlet With Data </TITLE></HEAD><BODY>";
         writer.println(htmlHeader);
 
         int id = Integer.parseInt(request.getParameter("id"));
-        String contents = getFormHeader("update", "service");
+        String contents = "You send update request for object type service.<br>" +
+            "<form action=\"./\" method=\"post\">\n" +
+            "<input type=\"hidden\" name=\"action\" value=\"updateservice\"/>\n";
 
         contents += "<input type=\"hidden\" name=\"id\" value=\"" + id + "\"/>\n";
 
@@ -592,11 +559,11 @@ public class ServletWithData extends HttpServlet {
             contents += "value=\"" + comp.getId() + "\">" + comp.toString() + "</option>\n";
         }
         contents += " </select>";
-        contents += getFormFooter();
+        contents += "<input type=\"submit\" value=\"Submit\" /></form>";
         writer.println(contents);
         contents = getCancelForm();
         writer.println(contents);
-        String htmlFooter  = getFooter();
+        String htmlFooter  = "</BODY></HTML>";
         writer.println(htmlFooter);
     }catch(Exception e){
         throw e;
