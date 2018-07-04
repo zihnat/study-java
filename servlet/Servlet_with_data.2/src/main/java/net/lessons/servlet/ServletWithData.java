@@ -3,6 +3,7 @@ package net.lessons.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import java.util.regex.Matcher;
@@ -57,23 +58,20 @@ public class ServletWithData extends HttpServlet {
   throws IOException{
     String action = "";
     String objType = null;
-
+    PrintWriter writer = null;
     String idStr = null;
     int id = 0;
-    Boolean doget = true;
     try{
         if (request.getParameterMap().containsKey("action")) {
           action = request.getParameter("action");
         }
-        if (request.getParameterMap().containsKey("object")) {
-          objType = request.getParameter("object");
-        }
+        writer = response.getWriter();
         switch(action){
             case "createrequest":
-                doget = false;
-                printCreateUpdateForm(request, response);
+                printCreateUpdateForm(request, writer);
                 break;
             case "create":
+                objType = request.getParameter("object");
                 switch(objType){
                     case "car":
                         String mark = request.getParameter("mark");
@@ -88,41 +86,43 @@ public class ServletWithData extends HttpServlet {
                         String dateStr = request.getParameter("date");
                         String priceStr = request.getParameter("price");
                         //DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                        if(checkDateFormat(dateStr) && checkPriceFormat(priceStr)){
-                            Date date = java.sql.Date.valueOf(dateStr);
+                        //if(checkDateFormat(dateStr)){
+                          SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                          java.util.Date theDate;
+                          theDate = format.parse(dateStr);
+                            Date date = new java.sql.Date(theDate.getTime());
                             Float price = Float.parseFloat(priceStr);
                             String carStr = request.getParameter("carid");
                             int car = Integer.parseInt(carStr);
                             String compStr = request.getParameter("companyid");
                             int comp = Integer.parseInt(compStr);
                             daoServ.add(new ServiceDTO(date, price, car, comp));
-                        }else{
-                            doget = false;
-                            printText(response, "Error: illegal value(s).");
-                        }
+                        //}else{
+                        //    writer.println("Error: illegal value(s).");
+                        //}
                         break;
                 }
+                printMainPage(request, writer);
                 break;
             case "delete":
                 idStr = request.getParameter("id");
                 id = Integer.parseInt(idStr);
-                try{
-                    switch(objType){
-                        case "car":
-                            daoCar.delete(id);
-                            break;
-                        case "company":
-                            daoComp.delete(id);
-                            break;
-                        case "service":
-                            daoServ.delete(id);
-                            break;
-                    }
-                }catch(DAOException e){
-                    System.out.println(e);
+                objType = request.getParameter("object");
+                switch(objType){
+                  case "car":
+                    daoCar.delete(id);
+                    break;
+                  case "company":
+                    daoComp.delete(id);
+                    break;
+                  case "service":
+                    daoServ.delete(id);
+                    break;
                 }
+                printMainPage(request, writer);
                 break;
             case "update":
+                objType = request.getParameter("object");
                 idStr = request.getParameter("id");
                 id = Integer.parseInt(idStr);
                 switch(objType){
@@ -138,25 +138,25 @@ public class ServletWithData extends HttpServlet {
                     case "service":
                         String dateStr = request.getParameter("date");
                         String priceStr = request.getParameter("price");
-                        if(checkDateFormat(dateStr) && checkPriceFormat(priceStr)){
-                            Date date = java.sql.Date.valueOf(dateStr);
-                            Float price = Float.parseFloat(priceStr);
-                            String carStr = request.getParameter("carid");
-                            int car = Integer.parseInt(carStr);
-                            String compStr = request.getParameter("companyid");
-                            int comp = Integer.parseInt(compStr);
-                            daoServ.update(new ServiceDTO(id, date, price, car, comp));
-                        }else{
-                            doget = false;
-                        }
+                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                        java.util.Date theDate;
+                        theDate = format.parse(dateStr);
+                        Date date = new java.sql.Date(theDate.getTime());
+                        Float price = Float.parseFloat(priceStr);
+                        String carStr = request.getParameter("carid");
+                        int car = Integer.parseInt(carStr);
+                        String compStr = request.getParameter("companyid");
+                        int comp = Integer.parseInt(compStr);
+                        daoServ.update(new ServiceDTO(id, date, price, car, comp));
                         break;
                 }
+                printMainPage(request, writer);
                 break;
             case "updaterequest":
-                doget = false;
-                printCreateUpdateForm(request, response);
+                printCreateUpdateForm(request, writer);
                 break;
             default:
+                printMainPage(request, writer);
                 break;
         }
     }catch(NullPointerException e){
@@ -166,14 +166,13 @@ public class ServletWithData extends HttpServlet {
         }else{
             text = "Error occured: " + e;
         }
-        doget = false;
-        printText(response, text);
+        writer.println(text);
     }catch(Exception e){
-        doget = false;
-        printText(response, "Error occured: " + e);
+        writer.println("Error occured: " + e);
     }finally{
-        if(doget){
-            printMainPage(request, response);
+        if(writer != null){
+            writer.flush();
+            writer.close();
         }
     }
   }
@@ -311,7 +310,7 @@ public class ServletWithData extends HttpServlet {
       return contents;
   }
 
-  private void printCreateUpdateForm(HttpServletRequest request, HttpServletResponse response)
+  private void printCreateUpdateForm(HttpServletRequest request, PrintWriter writer)
   throws Exception {
     String objType = request.getParameter("object");
     String action = request.getParameter("action");
@@ -320,9 +319,7 @@ public class ServletWithData extends HttpServlet {
     int id = 0;
     String htmlHeader = null;
     String htmlFooter = null;
-    PrintWriter writer = null;
     try{
-        writer = response.getWriter();
         htmlHeader = getHeader("Servlet With Data");
         writer.println(htmlHeader);
         String nextAction = null;
@@ -428,45 +425,11 @@ public class ServletWithData extends HttpServlet {
         writer.println(htmlFooter);
     }catch(Exception e){
         throw e;
-    }finally{
-        if(writer != null){
-            writer.flush();
-            writer.close();
-        }
     }
   }
 
-  private boolean checkDateFormat(String date){
-      Pattern p = Pattern.compile("^((19)|(20))[\\d]{2}-((1[0-2])|(0?[1-9]))-(([12][0-9])|(3[01])|(0?[1-9]))$");
-      Matcher m = p.matcher(date);
-      return m.matches();
-  }
-
-  private boolean checkPriceFormat(String price)
-  throws IOException{
-      try{
-        Pattern p = Pattern.compile("^\\d+.?\\d*$");
-        Matcher m = p.matcher(price);
-        Float priceVal = Float.parseFloat(price);
-        return (priceVal >= 0.00f) && m.matches();
-      }catch(Exception e){
-        throw new IOException("Price has illegal values");
-      }
-  }
-
-  private void printText(HttpServletResponse response, String text)
-  throws IOException{
-        PrintWriter writer = response.getWriter();
-        writer.println(text);
-        writer.flush();
-        writer.close();
-  }
-
-  private void printMainPage(HttpServletRequest request, HttpServletResponse response){
-    PrintWriter writer = null;
-
+  private void printMainPage(HttpServletRequest request, PrintWriter writer){
     try{
-      writer = response.getWriter();
       String htmlHeader  = getHeader("Servlet With Data");
       writer.println(htmlHeader);
 
@@ -503,15 +466,9 @@ public class ServletWithData extends HttpServlet {
         }else{
             text = "Error occured: " + e;
         }
-        writer.flush();
         writer.println(text);
     } catch (Exception e) {
       writer.println("An error occured while retrieving data: " + e.toString());
-    }finally {
-      if(writer != null){
-        writer.flush();
-        writer.close();
-      }
     }
   }
 }
