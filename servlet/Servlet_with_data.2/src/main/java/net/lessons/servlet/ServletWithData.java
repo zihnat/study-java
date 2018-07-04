@@ -63,9 +63,6 @@ public class ServletWithData extends HttpServlet {
           action = request.getParameter("action");
         }
         switch(action){
-            /*case "createrequest":
-                printCreateUpdateForm(request, response);
-                break;*/
             case "createrequestcar":
                 printCreateCarForm(request, response);
                 break;
@@ -111,9 +108,6 @@ public class ServletWithData extends HttpServlet {
                 updateService(request);
                 printMainPage(request, response);
                 break;
-            /*case "updaterequest":
-                printCreateUpdateForm(request, response);
-                break;*/
             case "updaterequestcar":
                 printUpdateCarForm(request, response);
                 break;
@@ -278,120 +272,6 @@ public class ServletWithData extends HttpServlet {
             "</form>";
       return contents;
   }
-
-  /*private void printCreateUpdateForm(HttpServletRequest request, HttpServletResponse response)
-  throws Exception {
-    try{
-        PrintWriter writer = response.getWriter();
-        String htmlHeader = getHeader("Servlet With Data");
-        writer.println(htmlHeader);
-        String nextAction = null;
-        writer.println("Hello!");
-        int id = 0;
-        String action = request.getParameter("action");
-        String objType = request.getParameter("object");
-        switch(action){
-          case "createrequest":
-            nextAction = "create";
-            writer.println("You send create request for object type " + objType + ". ");
-            break;
-          case "updaterequest":
-            id = Integer.parseInt(request.getParameter("id"));
-            nextAction = "update";
-            writer.println("You send update request for object type " + objType + ". ");
-            break;
-          default:
-            writer.println("Wrong action! Create or update request neaded. " + action + " is given.");
-            throw new IOException("Wrong action! Create or update request neaded. " + action + " is given.");
-        }
-        writer.println("<br>");
-        String contents = "<form action=\"./\" method=\"post\">\n" +
-            "<input type=\"hidden\" name=\"action\" value=\"" + nextAction + objType + "\"/>\n";
-        if(nextAction == "update"){
-            contents += "<input type=\"hidden\" name=\"id\" value=\"" + id + "\"/>\n";
-        }
-        contents += "<input type=\"hidden\" name=\"object\" value=\"" + objType + "\"/>\n";
-        switch(objType){
-            case "car":
-                String tmpValueMark = "";
-                String tmpValueModel = "";
-                if(nextAction == "create"){
-                  contents += "New Car ";
-                }else{
-                  CarDTO car = (CarDTO) daoCar.getById(id);
-                  contents += "Car with id \"" + id + "\" ";
-                  tmpValueMark = " value=\"" + car.getMark() + "\"";
-                  tmpValueModel = " value=\"" + car.getModel() + "\"";
-                }
-                contents += " mark: <input type=\"text\" name=\"mark\" size=\"30\" placeholder=\"mark\" " + tmpValueMark + "/>\n" +
-                    " model: <input type=\"text\" name=\"model\" size=\"30\" placeholder=\"model\" " + tmpValueModel + "/>\n";
-                break;
-            case "company":
-                String tmpValueName = "";
-                if(nextAction == "create"){
-                  contents += "New Company ";
-                }else{
-                  CompanyDTO comp = (CompanyDTO) daoComp.getById(id);
-                  contents += "Company with id \"" + id +"\"";
-                  tmpValueName = "value=\"" + comp.getName() + "\"";
-                }
-                contents += " name: <input type=\"text\" name=\"name\" size=\"50\" placeholder=\"Company name\" " + tmpValueName + "/>\n";
-                break;
-            case "service":
-                ServiceDTO serv = null;
-                String tmpValueDate = "";
-                String tmpValuePrice = "";
-                if(nextAction == "create"){
-                  contents += "New service record ";
-                }else{
-                  serv = (ServiceDTO) daoServ.getById(id);
-                  contents += "Service record with id \"" + id + "\"";
-                  tmpValueDate = " value=\"" + serv.getDate() + "\"";
-                  tmpValuePrice = " value=\"" + serv.getPrice() + "\"";
-                }
-                contents += " date: <input type=\"text\" name=\"date\" size=\"10\" placeholder=\"YYYY-MM-DD\" " + tmpValueDate + "/>\n";
-                contents += " price: <input type=\"number\" name=\"price\" size=\"5\" placeholder=\"n.nn\" step=\"any\" " + tmpValuePrice + "/>\n";
-                contents += " car id : <select name=\"carid\">\n";
-                List<CarDTO> cars = daoCar.getAll();
-                for(int i = 0; i < cars.size(); i++){
-                    CarDTO car = cars.get(i);
-                    contents += "    <option ";
-                    if(serv != null && serv.getCar() == car.getId()){
-                        contents += "selected=\"selected\" ";
-                    }
-                    contents += "value=\"" + car.getId() + "\">" + car.toString() + "</option>\n";
-                }
-                contents += " </select>";
-                contents += " company id: <select name=\"companyid\"/>\n";
-                List<CompanyDTO> comps = daoComp.getAll();
-                for(int i = 0; i < comps.size(); i++){
-                    CompanyDTO comp = comps.get(i);
-                    contents += "    <option ";
-                    if(serv != null && serv.getCompany() == comp.getId()){
-                        contents += "selected=\"selected\" ";
-                    }
-                    contents += "value=\"" + comp.getId() + "\">" + comp.toString() + "</option>\n";
-                }
-                contents += " </select>";
-                break;
-            default:
-                contents += "Error: type \"" + objType + "\" does not exist!";
-        }
-        contents += "<input type=\"submit\" value=\"Submit\" />\n" +
-            "</form>";
-        writer.println(contents);
-        contents = "<form action=\"./\" method=\"post\">\n" +
-            "<input type=\"hidden\" name=\"action\" value=\"cancel\"/>\n" +
-            "<input type=\"hidden\" name=\"object\" value=\"" + objType + "\"/>\n" +
-            "<input type=\"submit\" value=\"Cancel\" />\n" +
-            "</form>";
-        writer.println(contents);
-        String htmlFooter  = getFooter();
-        writer.println(htmlFooter);
-    }catch(Exception e){
-        throw e;
-    }
-  }*/
 
   private void printMainPage(HttpServletRequest request, HttpServletResponse response)
   throws Exception{
