@@ -3,6 +3,7 @@ package net.lessons.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Date;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -56,107 +57,32 @@ public class ServletWithData extends HttpServlet {
 
   private void processRequest(HttpServletRequest request, HttpServletResponse response)
   throws IOException{
-    String action = "";
-    String objType = null;
-    PrintWriter writer = null;
-    String idStr = null;
-    int id = 0;
     try{
+        String action = "";
         if (request.getParameterMap().containsKey("action")) {
           action = request.getParameter("action");
         }
-        writer = response.getWriter();
         switch(action){
             case "createrequest":
-                printCreateUpdateForm(request, writer);
+                printCreateUpdateForm(request, response);
                 break;
             case "create":
-                objType = request.getParameter("object");
-                switch(objType){
-                    case "car":
-                        String mark = request.getParameter("mark");
-                        String model = request.getParameter("model");
-                        daoCar.add(new CarDTO(mark, model));
-                        break;
-                    case "company":
-                        String name = request.getParameter("name");
-                        daoComp.add(new CompanyDTO(name));
-                        break;
-                    case "service":
-                        String dateStr = request.getParameter("date");
-                        String priceStr = request.getParameter("price");
-                        //DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                        //if(checkDateFormat(dateStr)){
-                          SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                          java.util.Date theDate;
-                          theDate = format.parse(dateStr);
-                            Date date = new java.sql.Date(theDate.getTime());
-                            Float price = Float.parseFloat(priceStr);
-                            String carStr = request.getParameter("carid");
-                            int car = Integer.parseInt(carStr);
-                            String compStr = request.getParameter("companyid");
-                            int comp = Integer.parseInt(compStr);
-                            daoServ.add(new ServiceDTO(date, price, car, comp));
-                        //}else{
-                        //    writer.println("Error: illegal value(s).");
-                        //}
-                        break;
-                }
-                printMainPage(request, writer);
+                create(request);
+                printMainPage(request, response);
                 break;
             case "delete":
-                idStr = request.getParameter("id");
-                id = Integer.parseInt(idStr);
-                objType = request.getParameter("object");
-                switch(objType){
-                  case "car":
-                    daoCar.delete(id);
-                    break;
-                  case "company":
-                    daoComp.delete(id);
-                    break;
-                  case "service":
-                    daoServ.delete(id);
-                    break;
-                }
-                printMainPage(request, writer);
+                delete(request);
+                printMainPage(request, response);
                 break;
             case "update":
-                objType = request.getParameter("object");
-                idStr = request.getParameter("id");
-                id = Integer.parseInt(idStr);
-                switch(objType){
-                    case "car":
-                        String mark = request.getParameter("mark");
-                        String model = request.getParameter("model");
-                        daoCar.update(new CarDTO(id, mark, model));
-                        break;
-                    case "company":
-                        String name = request.getParameter("name");
-                        daoComp.update(new CompanyDTO(id, name));
-                        break;
-                    case "service":
-                        String dateStr = request.getParameter("date");
-                        String priceStr = request.getParameter("price");
-                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                        java.util.Date theDate;
-                        theDate = format.parse(dateStr);
-                        Date date = new java.sql.Date(theDate.getTime());
-                        Float price = Float.parseFloat(priceStr);
-                        String carStr = request.getParameter("carid");
-                        int car = Integer.parseInt(carStr);
-                        String compStr = request.getParameter("companyid");
-                        int comp = Integer.parseInt(compStr);
-                        daoServ.update(new ServiceDTO(id, date, price, car, comp));
-                        break;
-                }
-                printMainPage(request, writer);
+                update(request);
+                printMainPage(request, response);
                 break;
             case "updaterequest":
-                printCreateUpdateForm(request, writer);
+                printCreateUpdateForm(request, response);
                 break;
             default:
-                printMainPage(request, writer);
+                printMainPage(request, response);
                 break;
         }
     }catch(NullPointerException e){
@@ -166,14 +92,15 @@ public class ServletWithData extends HttpServlet {
         }else{
             text = "Error occured: " + e;
         }
+        PrintWriter writer = response.getWriter();
         writer.println(text);
     }catch(Exception e){
+        PrintWriter writer = response.getWriter();
         writer.println("Error occured: " + e);
     }finally{
-        if(writer != null){
-            writer.flush();
-            writer.close();
-        }
+        PrintWriter writer = response.getWriter();
+        writer.flush();
+        writer.close();
     }
   }
 
@@ -310,28 +237,24 @@ public class ServletWithData extends HttpServlet {
       return contents;
   }
 
-  private void printCreateUpdateForm(HttpServletRequest request, PrintWriter writer)
+  private void printCreateUpdateForm(HttpServletRequest request, HttpServletResponse response)
   throws Exception {
-    String objType = request.getParameter("object");
-    String action = request.getParameter("action");
-
-    String idStr = null;
-    int id = 0;
-    String htmlHeader = null;
-    String htmlFooter = null;
     try{
-        htmlHeader = getHeader("Servlet With Data");
+        PrintWriter writer = response.getWriter();
+        String htmlHeader = getHeader("Servlet With Data");
         writer.println(htmlHeader);
         String nextAction = null;
         writer.println("Hello!");
+        int id = 0;
+        String action = request.getParameter("action");
+        String objType = request.getParameter("object");
         switch(action){
           case "createrequest":
             nextAction = "create";
             writer.println("You send create request for object type " + objType + ". ");
             break;
           case "updaterequest":
-            idStr = request.getParameter("id");
-            id = Integer.parseInt(idStr);
+            id = Integer.parseInt(request.getParameter("id"));
             nextAction = "update";
             writer.println("You send update request for object type " + objType + ". ");
             break;
@@ -421,15 +344,17 @@ public class ServletWithData extends HttpServlet {
             "<input type=\"submit\" value=\"Cancel\" />\n" +
             "</form>";
         writer.println(contents);
-        htmlFooter  = getFooter();
+        String htmlFooter  = getFooter();
         writer.println(htmlFooter);
     }catch(Exception e){
         throw e;
     }
   }
 
-  private void printMainPage(HttpServletRequest request, PrintWriter writer){
+  private void printMainPage(HttpServletRequest request, HttpServletResponse response)
+  throws Exception{
     try{
+      PrintWriter writer = response.getWriter();
       String htmlHeader  = getHeader("Servlet With Data");
       writer.println(htmlHeader);
 
@@ -466,9 +391,86 @@ public class ServletWithData extends HttpServlet {
         }else{
             text = "Error occured: " + e;
         }
+        PrintWriter writer = response.getWriter();
         writer.println(text);
     } catch (Exception e) {
-      writer.println("An error occured while retrieving data: " + e.toString());
+        PrintWriter writer = response.getWriter();
+        writer.println("An error occured while retrieving data: " + e.toString());
+    }
+  }
+
+  private void create(HttpServletRequest request)
+  throws DAOException, ParseException{
+    switch(request.getParameter("object")){
+        case "car":
+            String mark = request.getParameter("mark");
+            String model = request.getParameter("model");
+            daoCar.add(new CarDTO(mark, model));
+            break;
+        case "company":
+            String name = request.getParameter("name");
+            daoComp.add(new CompanyDTO(name));
+            break;
+        case "service":
+            String dateStr = request.getParameter("date");
+            String priceStr = request.getParameter("price");
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            java.util.Date theDate;
+            theDate = format.parse(dateStr);
+            Date date = new java.sql.Date(theDate.getTime());
+            Float price = Float.parseFloat(priceStr);
+            String carStr = request.getParameter("carid");
+            int car = Integer.parseInt(carStr);
+            String compStr = request.getParameter("companyid");
+            int comp = Integer.parseInt(compStr);
+            daoServ.add(new ServiceDTO(date, price, car, comp));
+            break;
+    }
+  }
+
+  private void delete(HttpServletRequest request)
+  throws DAOException{
+    int id = Integer.parseInt(request.getParameter("id"));
+    switch(request.getParameter("object")){
+      case "car":
+        daoCar.delete(id);
+        break;
+      case "company":
+        daoComp.delete(id);
+        break;
+      case "service":
+        daoServ.delete(id);
+        break;
+    }
+  }
+
+  private void update(HttpServletRequest request)
+  throws DAOException, ParseException{
+    int id = Integer.parseInt(request.getParameter("id"));
+    switch(request.getParameter("object")){
+        case "car":
+            String mark = request.getParameter("mark");
+            String model = request.getParameter("model");
+            daoCar.update(new CarDTO(id, mark, model));
+            break;
+        case "company":
+            String name = request.getParameter("name");
+            daoComp.update(new CompanyDTO(id, name));
+            break;
+        case "service":
+            String dateStr = request.getParameter("date");
+            String priceStr = request.getParameter("price");
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            java.util.Date theDate;
+            theDate = format.parse(dateStr);
+            Date date = new java.sql.Date(theDate.getTime());
+            Float price = Float.parseFloat(priceStr);
+            String carStr = request.getParameter("carid");
+            int car = Integer.parseInt(carStr);
+            String compStr = request.getParameter("companyid");
+            int comp = Integer.parseInt(compStr);
+            daoServ.update(new ServiceDTO(id, date, price, car, comp));
+            break;
     }
   }
 }
