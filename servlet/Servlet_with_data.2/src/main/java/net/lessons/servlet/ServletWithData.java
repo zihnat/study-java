@@ -5,8 +5,8 @@ import java.io.PrintWriter;
 import java.sql.Date;
 import java.util.List;
 
-import java.util.regex.Matcher;  
-import java.util.regex.Pattern; 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 //import javax.servlet.ServletException;
 import javax.servlet.ServletConfig;
@@ -42,56 +42,7 @@ public class ServletWithData extends HttpServlet {
    * handles HTTP GET request
    */
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    PrintWriter writer = null;
-
-    try{
-      writer = response.getWriter();
-      String htmlHeader  = getHeader("Servlet With Data");
-      writer.println(htmlHeader);
-
-      //table cars
-      String tableHeader = getTableHeader();
-      writer.println(tableHeader);
-      String tableRows = fealTableByCars(daoCar.getAll());
-      writer.println(tableRows);
-      String tableFooter = getTableFooter();
-      writer.println(tableFooter);
-
-      //table company
-      tableHeader = getTableHeader();
-      writer.println(tableHeader);
-      tableRows = fealTableByComp(daoComp.getAll());
-      writer.println(tableRows);
-      tableFooter = getTableFooter();
-      writer.println(tableFooter);
-
-      //table service
-      tableHeader = getTableHeader();
-      writer.println(tableHeader);
-      tableRows = fealTableByServ(daoServ.getAll());
-      writer.println(tableRows);
-      tableFooter = getTableFooter();
-      writer.println(tableFooter);
-
-      String htmlFooter  = getFooter();
-      writer.println(htmlFooter);
-    }catch(NullPointerException e){
-        String text = null;
-        if(daoCar == null || daoComp == null || daoServ == null){
-            text = "One or more DAO objects does not exist. Probably some problems with DB connection.";
-        }else{
-            text = "Error occured: " + e;
-        }
-        writer.flush();
-        writer.println(text);
-    } catch (Exception e) {
-      writer.println("An error occured while retrieving data: " + e.toString());
-    }finally {
-      if(writer != null){
-        writer.flush();
-        writer.close();
-      }
-    }
+    processRequest(request, response);
   }
 
   /**
@@ -99,13 +50,24 @@ public class ServletWithData extends HttpServlet {
    */
   public void doPost(HttpServletRequest request, HttpServletResponse response)
   throws IOException {
-    String action = request.getParameter("action");
-    String objType = request.getParameter("object");
+    processRequest(request, response);
+  }
+
+  private void processRequest(HttpServletRequest request, HttpServletResponse response)
+  throws IOException{
+    String action = "";
+    String objType = null;
 
     String idStr = null;
     int id = 0;
     Boolean doget = true;
     try{
+        if (request.getParameterMap().containsKey("action")) {
+          action = request.getParameter("action");
+        }
+        if (request.getParameterMap().containsKey("object")) {
+          objType = request.getParameter("object");
+        }
         switch(action){
             case "createrequest":
                 doget = false;
@@ -211,7 +173,7 @@ public class ServletWithData extends HttpServlet {
         printText(response, "Error occured: " + e);
     }finally{
         if(doget){
-            doGet(request, response);
+            printMainPage(request, response);
         }
     }
   }
@@ -473,17 +435,17 @@ public class ServletWithData extends HttpServlet {
         }
     }
   }
-  
+
   private boolean checkDateFormat(String date){
-      Pattern p = Pattern.compile("^((19)|(20))[\\d]{2}-((1[0-2])|(0?[1-9]))-(([12][0-9])|(3[01])|(0?[1-9]))$");  
-      Matcher m = p.matcher(date);  
+      Pattern p = Pattern.compile("^((19)|(20))[\\d]{2}-((1[0-2])|(0?[1-9]))-(([12][0-9])|(3[01])|(0?[1-9]))$");
+      Matcher m = p.matcher(date);
       return m.matches();
   }
-  
+
   private boolean checkPriceFormat(String price)
   throws IOException{
       try{
-        Pattern p = Pattern.compile("^\\d+.?\\d*$");  
+        Pattern p = Pattern.compile("^\\d+.?\\d*$");
         Matcher m = p.matcher(price);
         Float priceVal = Float.parseFloat(price);
         return (priceVal >= 0.00f) && m.matches();
@@ -491,12 +453,65 @@ public class ServletWithData extends HttpServlet {
         throw new IOException("Price has illegal values");
       }
   }
-  
+
   private void printText(HttpServletResponse response, String text)
   throws IOException{
         PrintWriter writer = response.getWriter();
         writer.println(text);
         writer.flush();
         writer.close();
+  }
+
+  private void printMainPage(HttpServletRequest request, HttpServletResponse response){
+    PrintWriter writer = null;
+
+    try{
+      writer = response.getWriter();
+      String htmlHeader  = getHeader("Servlet With Data");
+      writer.println(htmlHeader);
+
+      //table cars
+      String tableHeader = getTableHeader();
+      writer.println(tableHeader);
+      String tableRows = fealTableByCars(daoCar.getAll());
+      writer.println(tableRows);
+      String tableFooter = getTableFooter();
+      writer.println(tableFooter);
+
+      //table company
+      tableHeader = getTableHeader();
+      writer.println(tableHeader);
+      tableRows = fealTableByComp(daoComp.getAll());
+      writer.println(tableRows);
+      tableFooter = getTableFooter();
+      writer.println(tableFooter);
+
+      //table service
+      tableHeader = getTableHeader();
+      writer.println(tableHeader);
+      tableRows = fealTableByServ(daoServ.getAll());
+      writer.println(tableRows);
+      tableFooter = getTableFooter();
+      writer.println(tableFooter);
+
+      String htmlFooter  = getFooter();
+      writer.println(htmlFooter);
+    }catch(NullPointerException e){
+        String text = null;
+        if(daoCar == null || daoComp == null || daoServ == null){
+            text = "One or more DAO objects does not exist. Probably some problems with DB connection.";
+        }else{
+            text = "Error occured: " + e;
+        }
+        writer.flush();
+        writer.println(text);
+    } catch (Exception e) {
+      writer.println("An error occured while retrieving data: " + e.toString());
+    }finally {
+      if(writer != null){
+        writer.flush();
+        writer.close();
+      }
+    }
   }
 }

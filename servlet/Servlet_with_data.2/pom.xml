@@ -39,7 +39,7 @@
          </activation>
          <properties>
              <jdbc.driver>com.mysql.jdbc.Driver</jdbc.driver>
-             <jdbc.host>jdbc:mysql://localhost:3306/example</jdbc.host>
+             <jdbc.host>jdbc:mysql://78.155.205.24:3306/example</jdbc.host>
              <jdbc.login>user</jdbc.login>
              <jdbc.password>passwordForUser</jdbc.password>
          </properties>
