@@ -22,7 +22,7 @@ public abstract class BaseDAO<T> implements InterfaceDAO<T> {
     }
 
     public void close(){}
-    
+
     protected abstract String getSelectQuery();
     protected abstract T getObject(Session session, int id);
 
@@ -47,7 +47,7 @@ public abstract class BaseDAO<T> implements InterfaceDAO<T> {
       }
     }
 
-    public T getById(int id) 
+    public T getById(int id)
     throws DAOException {
       Session session = null;
       try{
@@ -68,15 +68,67 @@ public abstract class BaseDAO<T> implements InterfaceDAO<T> {
       }
     }
 
+    public void add(T obj)
+    throws DAOException {
+      Session session = null;
+      try{
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        session.save(obj);
+        session.getTransaction().commit();
+      }catch(Exception e){
+        Transaction tr = session.getTransaction();
+        if(tr != null){
+            tr.rollback();
+        }
+        throw new DAOException("Can't create row", e);
+      }finally{
+        try{
+          if(session != null){
+            session.close();
+          }
+        }catch(Exception e){
+          throw new DAOException("Can't close session", e);
+        }
+      }
+    }
+
+    public boolean update(T obj) throws DAOException {
+      Session session = null;
+      try{
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.saveOrUpdate(obj);
+        session.getTransaction().commit();
+        return true;
+      }catch(Exception e){
+        Transaction tr = session.getTransaction();
+        if(tr != null){
+            tr.rollback();
+        }
+        throw new DAOException("Can't update row", e);
+      }finally{
+        try{
+          if(session != null){
+            session.close();
+          }
+        }catch(Exception e){
+          throw new DAOException("Can't close session", e);
+        }
+      }
+    }
+
+
     public void delete(int id) throws DAOException {
       Session session = null;
       try{
         session = sessionFactory.openSession();
         session.beginTransaction();
-        
+
         T origin = getObject(session, id);
         session.delete(origin);
-        
+
         session.getTransaction().commit();
       }catch(Exception e){
         Transaction tr = session.getTransaction();

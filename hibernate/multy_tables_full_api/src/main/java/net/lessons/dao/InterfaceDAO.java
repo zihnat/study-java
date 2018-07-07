@@ -8,7 +8,7 @@ public interface InterfaceDAO<T>{
 
   public T getById(int id) throws DAOException;
 
-  public int add(T obj) throws DAOException;
+  public void add(T obj) throws DAOException;
 
   public boolean update(T obj) throws DAOException;
 

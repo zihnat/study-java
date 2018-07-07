@@ -9,16 +9,16 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "services", schema = "example")
-public class CompanyDTO{
+public class CompanyDTO /*implements Serializable*/{
   @Id
   @GeneratedValue( strategy = GenerationType.AUTO )
   private int id;
-  
+
   @Column(name = "name")
   private String name;
 
   public CompanyDTO(){}
-  
+
   public CompanyDTO(String newName){
     setName(newName);
   }
