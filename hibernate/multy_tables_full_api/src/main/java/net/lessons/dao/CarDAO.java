@@ -3,7 +3,7 @@ package net.lessons.dao;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-public class CarDAO extends BaseDAO <CarDTO> implements InterfaceDAO<CarDTO>{
+public class CarDAO extends DAOImpl <CarDTO>{
 
     public CarDAO()
     throws DAOException{

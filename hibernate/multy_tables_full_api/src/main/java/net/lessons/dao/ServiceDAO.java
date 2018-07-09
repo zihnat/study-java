@@ -3,7 +3,7 @@ package net.lessons.dao;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-public class ServiceDAO extends BaseDAO<ServiceDTO>{
+public class ServiceDAO extends DAOImpl<ServiceDTO>{
 
   public ServiceDAO()
   throws DAOException{}

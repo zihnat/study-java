@@ -4,17 +4,17 @@ import java.util.HashMap;
 
 public class DAOFactory{
 
-  private HashMap<Class, InterfaceDAO> creators;
+  private HashMap<Class, DAO> creators;
 
   public DAOFactory() throws DAOException{
-    creators = new HashMap<Class, InterfaceDAO>();
+    creators = new HashMap<Class, DAO>();
     creators.put(CarDTO.class, new CarDAO());
     creators.put(CompanyDTO.class, new CompanyDAO());
     creators.put(ServiceDTO.class, new ServiceDAO());
   }
 
-  public InterfaceDAO getDAO(Class dto) throws DAOException{
-    InterfaceDAO res = creators.get(dto);
+  public DAO getDAO(Class dto) throws DAOException{
+    DAO res = creators.get(dto);
     if(res == null){
       throw new DAOException ("DAO object for " + dto + " not found");
     }

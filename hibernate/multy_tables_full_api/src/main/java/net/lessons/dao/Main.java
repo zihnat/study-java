@@ -4,9 +4,9 @@ import java.util.*;
 public class Main {
 
   public static void main(String[] args) {
-    InterfaceDAO daoCar = null;
-    InterfaceDAO daoComp = null;
-    InterfaceDAO daoServ = null;
+    DAO daoCar = null;
+    DAO daoComp = null;
+    DAO daoServ = null;
     try{
       DAOFactory factory = new DAOFactory();
       daoCar = factory.getDAO(CarDTO.class);

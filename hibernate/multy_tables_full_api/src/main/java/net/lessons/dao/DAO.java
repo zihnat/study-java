@@ -2,7 +2,7 @@ package net.lessons.dao;
 
 import java.util.*;
 
-public interface InterfaceDAO<T>{
+public interface DAO<T>{
 
   public List<T> getAll() throws DAOException;
 

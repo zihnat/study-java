@@ -9,10 +9,10 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
-public abstract class BaseDAO<T> implements InterfaceDAO<T> {
+public abstract class DAOImpl<T> implements DAO<T> {
   protected SessionFactory sessionFactory = null;
 
-    public BaseDAO()
+    public DAOImpl()
     throws DAOException{
       try{
           sessionFactory = new Configuration().configure().buildSessionFactory();
@@ -101,7 +101,7 @@ public abstract class BaseDAO<T> implements InterfaceDAO<T> {
       try{
         session = sessionFactory.openSession();
         session.beginTransaction();
-        session.saveOrUpdate(obj);
+        session.update(obj);
         session.getTransaction().commit();
       }catch(Exception e){
         Transaction tr = session.getTransaction();

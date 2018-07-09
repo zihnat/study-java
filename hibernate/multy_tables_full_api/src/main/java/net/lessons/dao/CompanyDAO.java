@@ -3,7 +3,7 @@ package net.lessons.dao;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-public class CompanyDAO extends BaseDAO<CompanyDTO>{
+public class CompanyDAO extends DAOImpl<CompanyDTO>{
 
   public CompanyDAO()
   throws DAOException{}
