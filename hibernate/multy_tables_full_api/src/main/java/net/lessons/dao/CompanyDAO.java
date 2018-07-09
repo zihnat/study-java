@@ -3,19 +3,19 @@ package net.lessons.dao;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-public class CompanyDAO extends DAOImpl<CompanyDTO>{
+public class CompanyDAO extends DAOImpl<Company>{
 
   public CompanyDAO()
   throws DAOException{}
 
     @Override
     protected String getSelectQuery() {
-        return "from CompanyDTO";
+        return "from Company";
     }
 
     @Override
-    protected CompanyDTO getObject(Session session, int id) {
-        return (CompanyDTO)session.get(CompanyDTO.class, id);
+    protected Company getObject(Session session, int id) {
+        return (Company)session.get(Company.class, id);
     }
 
 }

@@ -25,9 +25,9 @@
 		<!-- Echo all executed SQL to stdout -->
 		<property name="show_sql">true</property>
 
-		<mapping class="net.lessons.dao.CarDTO" />
-		<mapping class="net.lessons.dao.CompanyDTO" />
-		<mapping class="net.lessons.dao.ServiceDTO" />
+		<mapping class="net.lessons.dao.Car" />
+		<mapping class="net.lessons.dao.Company" />
+		<mapping class="net.lessons.dao.Service" />
 
 	</session-factory>
 </hibernate-configuration>

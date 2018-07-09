@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "services", schema = "example")
-public class CompanyDTO /*implements Serializable*/{
+public class Company /*implements Serializable*/{
   @Id
   @GeneratedValue( strategy = GenerationType.AUTO )
   private int id;
@@ -17,13 +17,13 @@ public class CompanyDTO /*implements Serializable*/{
   @Column(name = "name")
   private String name;
 
-  public CompanyDTO(){}
+  public Company(){}
 
-  public CompanyDTO(String newName){
+  public Company(String newName){
     setName(newName);
   }
 
-  public CompanyDTO(int newId, String newName){
+  public Company(int newId, String newName){
     setId(newId);
     setName(newName);
   }

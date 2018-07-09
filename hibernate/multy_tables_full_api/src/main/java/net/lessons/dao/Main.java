@@ -9,15 +9,15 @@ public class Main {
     DAO daoServ = null;
     try{
       DAOFactory factory = new DAOFactory();
-      daoCar = factory.getDAO(CarDTO.class);
-      List <CarDTO> listCars = daoCar.getAll();
+      daoCar = factory.getDAO(Car.class);
+      List <Car> listCars = daoCar.getAll();
       showList(listCars);
-      daoComp = factory.getDAO(CompanyDTO.class);
-      List <CompanyDTO> listComps = daoComp.getAll();
+      daoComp = factory.getDAO(Company.class);
+      List <Company> listComps = daoComp.getAll();
       showList(listComps);
       System.out.println(" - Auto services at work - ");
-      daoServ = factory.getDAO(ServiceDTO.class);
-      List <ServiceDTO> listServs = daoServ.getAll();
+      daoServ = factory.getDAO(Service.class);
+      List <Service> listServs = daoServ.getAll();
       showList(listServs);
     }catch(Exception e){
       System.out.println("Exception " + e);

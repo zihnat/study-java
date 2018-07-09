@@ -14,34 +14,34 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "cars", schema = "example")
-public class CarDTO{
+public class Car{
 
   private int id;
   private String mark;
   private String model;
-  private Set<ServiceDTO> services = new HashSet<ServiceDTO>();
+  private Set<Service> services = new HashSet<Service>();
 
-  public CarDTO(){}
+  public Car(){}
 
-  public CarDTO(int newId, String newMark, String newModel) {
+  public Car(int newId, String newMark, String newModel) {
     setId(newId);
     setMark(newMark);
     setModel(newModel);
   }
 
-  public CarDTO(String newMark, String newModel){
+  public Car(String newMark, String newModel){
     setMark(newMark);
     setModel(newModel);
   }
 
-  public CarDTO(int newId, String newMark, String newModel, Set<ServiceDTO> newServices) {
+  public Car(int newId, String newMark, String newModel, Set<Service> newServices) {
     setId(newId);
     setMark(newMark);
     setModel(newModel);
     setServices(newServices);
   }
 
-  public CarDTO(String newMark, String newModel, Set<ServiceDTO> newServices){
+  public Car(String newMark, String newModel, Set<Service> newServices){
     setMark(newMark);
     setModel(newModel);
     setServices(newServices);
@@ -76,10 +76,10 @@ public class CarDTO{
 
 
   @OneToMany(fetch = FetchType.EAGER, mappedBy="car", cascade = CascadeType.ALL)
-  public Set<ServiceDTO> getServices(){
+  public Set<Service> getServices(){
     return services;
   }
-  public void setServices(Set<ServiceDTO> newServices){
+  public void setServices(Set<Service> newServices){
     services = newServices;
   }
 
@@ -87,14 +87,14 @@ public class CarDTO{
   public String toString(){
     if(id > -1){
       String res = "{id: " + id + ", mark: \"" + mark + "\" , model: \"" + model + "\", services: [";
-      for (ServiceDTO serv : services) {
+      for (Service serv : services) {
         res += "\n  " + serv;
       }
       res += "]}";
       return res;
     }else{
       String res = "{id: undefined, mark: \"" + mark + "\" , model: \"" + model + "\", services: [";
-      for (ServiceDTO serv : services) {
+      for (Service serv : services) {
         res += "\n  " + serv;
       }
       res += "]}";

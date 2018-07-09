@@ -13,7 +13,7 @@ import javax.persistence.ManyToOne;
 
 @Entity
 @Table(name = "service", schema = "example")
-public class ServiceDTO{
+public class Service{
   @Id
   @GeneratedValue( strategy = GenerationType.AUTO )
   private int id;
@@ -27,11 +27,11 @@ public class ServiceDTO{
 
   @ManyToOne
   @JoinColumn(name = "service_id", nullable = false)
-  private CompanyDTO comp;
+  private Company comp;
 
-  public ServiceDTO(){}
+  public Service(){}
 
-  public ServiceDTO(int newId, Date newDate, Float newPrice, int newCar, CompanyDTO newComp){
+  public Service(int newId, Date newDate, Float newPrice, int newCar, Company newComp){
     setId(newId);
     setDate(newDate);
     setPrice(newPrice);
@@ -39,7 +39,7 @@ public class ServiceDTO{
     setCompany(newComp);
   }
 
-  public ServiceDTO(Date newDate, Float newPrice, int newCar, CompanyDTO newComp){
+  public Service(Date newDate, Float newPrice, int newCar, Company newComp){
     setDate(newDate);
     setPrice(newPrice);
     setCar(newCar);
@@ -78,11 +78,11 @@ public class ServiceDTO{
       car = newCar;
   }
 
-  public CompanyDTO getCompany(){
+  public Company getCompany(){
       return comp;
   }
 
-  public void setCompany(CompanyDTO company){
+  public void setCompany(Company company){
       comp = company;
   }
 

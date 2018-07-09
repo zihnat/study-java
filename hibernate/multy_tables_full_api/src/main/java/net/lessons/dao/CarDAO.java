@@ -3,7 +3,7 @@ package net.lessons.dao;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-public class CarDAO extends DAOImpl <CarDTO>{
+public class CarDAO extends DAOImpl <Car>{
 
     public CarDAO()
     throws DAOException{
@@ -12,12 +12,12 @@ public class CarDAO extends DAOImpl <CarDTO>{
 
     @Override
     protected String getSelectQuery() {
-        return "from CarDTO";
+        return "from Car";
     }
 
     @Override
-    protected CarDTO getObject(Session session, int id) {
-        return (CarDTO)session.get(CarDTO.class, id);
+    protected Car getObject(Session session, int id) {
+        return (Car)session.get(Car.class, id);
     }
 
 }

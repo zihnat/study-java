@@ -8,9 +8,9 @@ public class DAOFactory{
 
   public DAOFactory() throws DAOException{
     creators = new HashMap<Class, DAO>();
-    creators.put(CarDTO.class, new CarDAO());
-    creators.put(CompanyDTO.class, new CompanyDAO());
-    creators.put(ServiceDTO.class, new ServiceDAO());
+    creators.put(Car.class, new CarDAO());
+    creators.put(Company.class, new CompanyDAO());
+    creators.put(Service.class, new ServiceDAO());
   }
 
   public DAO getDAO(Class dto) throws DAOException{
