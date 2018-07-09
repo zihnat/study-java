@@ -21,7 +21,9 @@ public abstract class BaseDAO<T> implements InterfaceDAO<T> {
       }
     }
 
-    public void close(){}
+    public void close(){
+      sessionFactory.close();
+    }
 
     protected abstract String getSelectQuery();
     protected abstract T getObject(Session session, int id);
@@ -94,14 +96,13 @@ public abstract class BaseDAO<T> implements InterfaceDAO<T> {
       }
     }
 
-    public boolean update(T obj) throws DAOException {
+    public void update(T obj) throws DAOException {
       Session session = null;
       try{
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.saveOrUpdate(obj);
         session.getTransaction().commit();
-        return true;
       }catch(Exception e){
         Transaction tr = session.getTransaction();
         if(tr != null){

@@ -10,7 +10,7 @@ public interface InterfaceDAO<T>{
 
   public void add(T obj) throws DAOException;
 
-  public boolean update(T obj) throws DAOException;
+  public void update(T obj) throws DAOException;
 
   public void delete(int id) throws DAOException;
 
