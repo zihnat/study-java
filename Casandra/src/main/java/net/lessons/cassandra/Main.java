@@ -21,28 +21,15 @@ public class Main {
       schemaRepository.useKeyspace(KEYSPACE_NAME);
       carRepository = new CarRepository(session);
       carRepository.createTable();
-      //insert some cars to table
-      Car car = new Car(0, "VW", "Bug");
-      carRepository.insertCar(car);
-      car = new Car(1, "BMW", "A7");
-      carRepository.insertCar(car);
-      car = new Car(2, "Audi", "TT");
-      carRepository.insertCar(car);
-      //select all cars
-      System.out.println("Must be 3 results:");
-      List<Car> cars = carRepository.selectAll();
-      for(int i = 0; i < cars.size(); i++){
-        System.out.println(cars.get(i));
-      }
-      // update one row and delete another
-      System.out.println("Must be 2 results:");
-      car = new Car(1, "Lada", "Kalina");
-      carRepository.insertCar(car);
-      carRepository.deleteCar(0);
-      cars = carRepository.selectAll();
-      for(int i = 0; i < cars.size(); i++){
-        System.out.println(cars.get(i));
-      }
+      //insert million cars to table
+      System.out.println("Inserting million cars time: " + Tester.getInsertTime(carRepository, 1000000) + " milliseconds");
+
+      //select by id million cars in table
+      System.out.println("Search by id million cars time: " + Tester.getSercheTime(carRepository, 1000000) + " milliseconds");
+
+      //delete million cars from table
+      System.out.println("Delete by id million cars time: " + Tester.getDeleteTime(carRepository, 1000000) + " milliseconds");
+
     }catch(Exception e){
       System.out.println("Exception " + e);
     }finally{

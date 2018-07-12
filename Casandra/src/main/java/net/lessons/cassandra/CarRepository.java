@@ -27,17 +27,6 @@ public class CarRepository {
         session.execute(query);
     }
 
-    /*
-    public void alterTableCars(String columnName, String columnType) {
-        StringBuilder sb = new StringBuilder("ALTER TABLE ")
-          .append(TABLE_NAME).append(" ADD ")
-          .append(columnName).append(" ")
-          .append(columnType).append(";");
-
-        String query = sb.toString();
-        session.execute(query);
-    }*/
-
     public void insertCar(Car car) {
         StringBuilder sb = new StringBuilder("INSERT INTO ")
           .append(TABLE_NAME).append("(id, mark, model) ")
