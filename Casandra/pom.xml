@@ -1,0 +1,90 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>net.lessons</groupId>
+	<artifactId>cassandra</artifactId>
+	<version>2.0.0.BUILD-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>Cassandra_with_Spring</name>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.0.3.RELEASE</version>
+	</parent>
+
+  <!--modules>
+		<module>util</module>
+		<module>example</module>
+		<module>java8</module>
+		<module>reactive</module>
+	</modules-->
+
+  <dependencies>
+		<!--dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-cassandra</artifactId>
+      <version>2.0.8.RELEASE</version>
+		</dependency-->
+		<dependency>
+			<groupId>com.datastax.cassandra</groupId>
+			<artifactId>cassandra-driver-core</artifactId>
+      <version>3.4.0</version>
+		 <type>jar</type>
+		</dependency>
+    <dependency>
+        <groupId>org.cassandraunit</groupId>
+        <artifactId>cassandra-unit</artifactId>
+        <version>3.0.0.1</version>
+    </dependency>
+
+		<!--dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency-->
+	</dependencies>
+
+  <profiles>
+    <profile>
+       <id>dev</id>
+       <activation>
+           <activeByDefault>true</activeByDefault>
+       </activation>
+       <properties>
+           <jdbc.driver>com.mysql.jdbc.Driver</jdbc.driver>
+           <jdbc.host>jdbc:mysql://78.155.205.24:3306/example</jdbc.host>
+           <jdbc.login>user</jdbc.login>
+           <jdbc.password>passwordForUser</jdbc.password>
+           <jdbc.dialect>org.hibernate.dialect.MySQLDialect</jdbc.dialect>
+       </properties>
+     </profile>
+   </profiles>
+
+   <build>
+    <resources>
+        <resource>
+             <directory>src/main/resources</directory>
+             <filtering>true</filtering>
+        </resource>
+    </resources>
+   </build>
+
+
+   <repositories>
+     <repository>
+         <id>spring-libs-release</id>
+         <name>Spring Releases</name>
+         <url>https://repo.spring.io/libs-release</url>
+         <snapshots>
+             <enabled>false</enabled>
+         </snapshots>
+     </repository>
+   </repositories>
+</project>
