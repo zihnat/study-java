@@ -1,7 +1,6 @@
 package net.lessons.dao;
 
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 public class ServiceDAO extends DAOImpl<Service>{
 

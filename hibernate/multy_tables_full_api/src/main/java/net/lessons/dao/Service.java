@@ -22,7 +22,7 @@ public class Service{
   @Column(name = "price")
   private Float price;
 
-  @Column(name = "car_id")
+  @Column(name = "car_id", insertable=false, updatable=false)
   private int car;
 
   @ManyToOne

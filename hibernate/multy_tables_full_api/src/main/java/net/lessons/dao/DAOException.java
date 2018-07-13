@@ -1,10 +1,10 @@
 package net.lessons.dao;
 
-class DAOException extends Exception{
+public class DAOException extends Exception{
 
   public DAOException() {}
 
-  public DAOException(String detailMessage/*, String methodName*/){
+  public DAOException(String detailMessage){
     super(detailMessage);
   }
 

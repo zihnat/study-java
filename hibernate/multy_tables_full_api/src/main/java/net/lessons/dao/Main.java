@@ -10,15 +10,20 @@ public class Main {
     try{
       DAOFactory factory = new DAOFactory();
       daoCar = factory.getDAO(Car.class);
+      daoCar.openSession();
       List <Car> listCars = daoCar.getAll();
       showList(listCars);
+      daoCar.closeSession();
       daoComp = factory.getDAO(Company.class);
+      daoComp.openSession();
       List <Company> listComps = daoComp.getAll();
       showList(listComps);
       System.out.println(" - Auto services at work - ");
       daoServ = factory.getDAO(Service.class);
+      daoServ.openSessionWithTransaction();
       List <Service> listServs = daoServ.getAll();
       showList(listServs);
+      daoServ.closeSessionRollbackTransaction();
     }catch(Exception e){
       System.out.println("Exception " + e);
       e.printStackTrace();

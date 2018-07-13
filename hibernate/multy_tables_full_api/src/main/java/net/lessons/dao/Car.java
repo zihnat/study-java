@@ -9,8 +9,11 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Table(name = "cars", schema = "example")
@@ -75,7 +78,9 @@ public class Car{
   }
 
 
-  @OneToMany(fetch = FetchType.EAGER, mappedBy="car", cascade = CascadeType.ALL)
+  @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @Fetch(FetchMode.JOIN)
+  @JoinColumn(name="car_id", nullable=false, insertable=true,updatable=true)
   public Set<Service> getServices(){
     return services;
   }

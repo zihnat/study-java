@@ -4,6 +4,13 @@ import java.util.*;
 
 public interface DAO<T>{
 
+  public void openSession() throws DAOException;
+  public void closeSession()throws DAOException;
+
+  public void openSessionWithTransaction() throws DAOException;
+  public void closeSessionCommitTransaction()throws DAOException;
+  public void closeSessionRollbackTransaction()throws DAOException;
+
   public List<T> getAll() throws DAOException;
 
   public T getById(int id) throws DAOException;

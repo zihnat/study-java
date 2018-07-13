@@ -10,6 +10,7 @@
 		<property name="connection.url">${jdbc.host}</property>
 		<property name="connection.username">${jdbc.login}</property>
 		<property name="connection.password">${jdbc.password}</property>
+    <property name="hibernate.hbm2ddl.auto">${jdbc.h2auto}</property>
 
 		<!-- JDBC connection pool (use the built-in) -->
 		<property name="connection.pool_size">1</property>
@@ -17,11 +18,6 @@
 		<!-- SQL dialect -->
 		<property name="dialect">${jdbc.dialect}</property>
 
-		<!-- Enable Hibernate's automatic session context management -->
-		<!--property name="current_session_context_class">thread</property-->
-
-		<!-- Disable the second-level cache -->
-		<!--property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property-->
 		<!-- Echo all executed SQL to stdout -->
 		<property name="show_sql">true</property>
 
